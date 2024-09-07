@@ -7,6 +7,7 @@ namespace ElectronicProjectManagement.Authentication.Services.IServices
     {
         Task<string> Register(RegisterDto model);
         Task<LoginReponseDto> Login(LoginDto model);
+        Task<LoginReponseDto> RefreshToken(TokenDto model);
         Task<bool> AssignRole(string Email, string RoleName);
         void SendOTPMail(OtpRequest otpRequest);
 

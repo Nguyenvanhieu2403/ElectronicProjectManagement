@@ -13,6 +13,8 @@ using ElectronicProjectManagement.Authentication.Data;
 using ElectronicProjectManagement.Authentication.Models;
 using MimeKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ElectronicProjectManagement.Authentication.Services
 {
@@ -58,10 +60,16 @@ namespace ElectronicProjectManagement.Authentication.Services
                 return new LoginReponseDto
                 {
                     User = null,
-                    Token = "Invalid Authentication"
+                    AccessToken = "Invalid Authentication"
                 };
             }
             var token = _jwtTokenGenerator.GeneratorToken(user);
+            var freshToken = _jwtTokenGenerator.GenerateRefreshToken();
+            // Update Refresh Token
+            user.RefreshToken = freshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+            await _userManager.UpdateAsync(user);
+
             UserDto userDto = new()
             {
                 ID = user.Id,
@@ -74,7 +82,9 @@ namespace ElectronicProjectManagement.Authentication.Services
             LoginReponseDto loginReponseDto = new()
             {
                 User = userDto,
-                Token = token
+                AccessToken = token,
+                RefreshToken = freshToken,
+                Expiration = DateTime.UtcNow.AddMinutes(30),
             };
             return loginReponseDto;
         }
@@ -182,6 +192,59 @@ namespace ElectronicProjectManagement.Authentication.Services
             userInfo = await service.Userinfo.Get().ExecuteAsync();
 
             return userInfo;
+        }
+
+        public async Task<LoginReponseDto> RefreshToken(TokenDto model)
+        {
+            string? accessToken = model.AccessToken;
+            string? refreshToken = model.RefreshToken;
+
+            var principal = _jwtTokenGenerator.GetPrincipalFromExpiredToken(accessToken);
+            if (principal == null)
+            {
+                return new LoginReponseDto
+                {
+                    User = null,
+                    AccessToken = "Invalid access token or refresh token"
+                };
+            }
+            string username = principal.Identity.Name;
+
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return new LoginReponseDto
+                {
+                    User = null,
+                    AccessToken = "Invalid access token or refresh token"
+                };
+            }
+
+            var token = _jwtTokenGenerator.GeneratorToken(user);
+            var freshToken = _jwtTokenGenerator.GenerateRefreshToken();
+            // Update Refresh Token
+            user.RefreshToken = freshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+            await _userManager.UpdateAsync(user);
+
+            UserDto userDto = new()
+            {
+                ID = user.Id,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+            };
+            LoginReponseDto loginReponseDto = new()
+            {
+                User = userDto,
+                AccessToken = token,
+                RefreshToken = freshToken,
+                Expiration = DateTime.UtcNow.AddMinutes(30),
+            };
+            return loginReponseDto;
         }
     }
 }

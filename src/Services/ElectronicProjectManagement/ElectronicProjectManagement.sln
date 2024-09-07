@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectronicProjectManagement.Authentication", "ElectronicProjectManagement.Authentication\ElectronicProjectManagement.Authentication.csproj", "{6FABA88F-EA80-4464-AB45-F9025646DC9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectronicProjectManagement.Authentication", "ElectronicProjectManagement.Authentication\ElectronicProjectManagement.Authentication.csproj", "{6FABA88F-EA80-4464-AB45-F9025646DC9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{70F6CB1F-72FC-4A26-B9AA-050D9F6585C3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{AD65F44D-6765-4AEF-BA07-2DC689C3F081}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectronicProjectManagement.Base", "ElectronicProjectManagement.Base\ElectronicProjectManagement.Base.csproj", "{B1503DAC-6498-41C7-B391-6D3A0381A87F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectronicProjectManagement.Base", "ElectronicProjectManagement.Base\ElectronicProjectManagement.Base.csproj", "{B1503DAC-6498-41C7-B391-6D3A0381A87F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{50DDDCBB-0DF4-41C8-8D22-81C38B8328F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectronicProjectManagement.OcelotGateway", "ElectronicProjectManagement.OcelotGateway\ElectronicProjectManagement.OcelotGateway.csproj", "{56FC46A7-F5E0-4B2B-84F0-D7C30C4E888E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,10 @@ Global
 		{B1503DAC-6498-41C7-B391-6D3A0381A87F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1503DAC-6498-41C7-B391-6D3A0381A87F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1503DAC-6498-41C7-B391-6D3A0381A87F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56FC46A7-F5E0-4B2B-84F0-D7C30C4E888E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56FC46A7-F5E0-4B2B-84F0-D7C30C4E888E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56FC46A7-F5E0-4B2B-84F0-D7C30C4E888E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56FC46A7-F5E0-4B2B-84F0-D7C30C4E888E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6FABA88F-EA80-4464-AB45-F9025646DC9F} = {70F6CB1F-72FC-4A26-B9AA-050D9F6585C3}
 		{B1503DAC-6498-41C7-B391-6D3A0381A87F} = {AD65F44D-6765-4AEF-BA07-2DC689C3F081}
+		{56FC46A7-F5E0-4B2B-84F0-D7C30C4E888E} = {50DDDCBB-0DF4-41C8-8D22-81C38B8328F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {13AAEBE0-40F2-46F7-97D9-9E1F00CA9BCD}

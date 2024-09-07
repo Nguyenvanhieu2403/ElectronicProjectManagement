@@ -44,6 +44,21 @@ namespace ElectronicProjectManagement.Authentication.Controllers
             return MethodResult.ResultWithSuccess(login, 200, "Success", 0);
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<MethodResult> RefreshToken([FromBody] TokenDto model)
+        {
+            if (model is null)
+            {
+                return MethodResult.ResultWithError("Invalid client request", "Invalid client request", 400);
+            }
+            var login = await _repos.RefreshToken(model);
+            if (login.User == null)
+            {
+                return MethodResult.ResultWithError("Invalid Refresh Token", "Invalid Refresh Token", 401);
+            }
+            return MethodResult.ResultWithSuccess(login, 200, "Success", 0);
+        }
+
         [HttpPost("AssignRole")]
         public async Task<MethodResult> AssignRole([FromBody] RegisterDto register)
         {
