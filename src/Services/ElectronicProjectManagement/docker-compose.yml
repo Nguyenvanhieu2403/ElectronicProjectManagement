@@ -1,0 +1,16 @@
+version: '3.8'  # Hoặc phiên bản mới hơn nếu bạn cần tính năng mới
+
+services:
+  sql-server-2019-container:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sql-server-2019-container
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Abc@123456789
+    ports:
+      - "1435:1433"
+    volumes:
+      - electronic-project-management-volume:/var/opt/mssql
+
+volumes:
+  electronic-project-management-volume:
