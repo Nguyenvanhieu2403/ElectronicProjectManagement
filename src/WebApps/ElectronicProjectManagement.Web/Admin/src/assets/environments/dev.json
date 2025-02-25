@@ -1,0 +1,29 @@
+{
+  "apiDomain": {
+    "gateway": "http://localhost/gwep",
+    "coreEndpoint": "http://localhost/gwep/coreapi",
+    "notificationHub": "http://localhost/gwep/notifi",
+    "dotnetEndpoint": "https://localhost:7155",
+    "fileEndpoint": "https://localhost:7155/File/download",
+    "akeneoEndpoint": "https://akeneo.baprangbo.site/api/rest/v1"
+  },
+  "authenticationSettings": {
+    "clientId": "vnpost-client",
+    "issuer": "http://localhost/gwep/coreapi"
+  },
+  "clientDomain": {
+    "appDomain": "https://localhost:8001",
+    "idSystem": "1"
+  },
+  "appMetadata": {
+    "main": {
+      "fileAccept": "image/*,.doc,.docx,.xls,xlsm,.xlsx,ppt,pptm,pptx,.pdf,.rar,.zip,docm,dot,dotm,dotx,epub,htm,html,mht,odt,ott,rtf,txt,djvu,xps,csv,fods,ods,ots,xlt,xltm,xltx,fodp,odp,otp,pot,potm,potx,pps,ppsm,ppsx"
+    }
+  },
+  "signalrConfig": {
+    "topic": {
+      "notificationCreated": "NotificationHub",
+      "viewUpdated": "ViewNotify"
+    }
+  }
+}

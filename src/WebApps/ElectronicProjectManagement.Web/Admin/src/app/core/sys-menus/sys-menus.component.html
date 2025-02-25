@@ -1,0 +1,143 @@
+<div class="page-content-area">
+  <div class="page-content-area__header">
+    <div class="page-title-area">
+      <div class="page-title-area__left-block">
+        <h1 class="page-title">
+          {{'SysMenus.Title' | translate}}
+
+        </h1>
+      </div>
+      <div class="page-title-area__right-block">
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content-area__body">
+    <div class="data-view-area">
+      <div class="data-view-area__left-block">
+        <div class="ag-data-tree-container">
+          <div [hidden]="!openTreeSearchAdv" class="ag-data-tree-tool-block h-px-16 h-pt-16 ">
+            <div class="p-fluid p-formgrid grid">
+              <div class="p-field col-12 md:col-12">
+                <p-dropdown [options]="arrStatusFilter" (onChange)="getTreeView()" [(ngModel)]="statusSearch">
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="ag-data-tree-content-block">
+            <p-button styleClass="p-button-info p-button-text mr-2 mb-2" (click)="toggleTreeSearchAdv()"
+              [class.-activated]="openTreeSearchAdv">
+              <ng-template pTemplate="content">
+                <span *ngIf="!openTreeSearchAdv" class="ci ci-data-1"></span>
+                <span *ngIf="openTreeSearchAdv" class=" ci ci-close"></span>
+              </ng-template>
+            </p-button>
+
+            <p-tree [value]="rootTreeNode" selectionMode="checkbox" [style]="{'width': '100%'}" class="ag-tree"
+              selectionMode="single" [(selection)]="selectedTreeNode" (onNodeSelect)="nodeSelect($event)"
+              [contextMenu]="contextMenuTree" [emptyMessage]="'LIST.EMPTY' | translate">
+            </p-tree>
+            <p-contextMenu #contextMenuTree [model]="items" appendTo="body">
+            </p-contextMenu>
+
+          </div>
+        </div>
+      </div>
+      <div class="data-view-area__main-block">
+        <div class="data-view-main-action-area">
+          <div class="data-view-record-action-area__left-block" style="flex: 1 1 400px">
+            <button pButton pRipple type="button" icon="pi pi-plus" label="{{'BUTTON.ADD' | translate}}"
+              class=" p-button-success mr-2 mb-2" (click)="addChildNode()" authorize="[{'core':'sysmenus/1'}]"></button>
+            <button pButton pRipple type="button" icon="pi pi-refresh" class=" p-button-info mr-2 mb-2"
+              pTooltip="{{'BUTTON.RELOAD' | translate}}" (click)="getTreeView()"></button>
+
+          </div>
+          <div class="data-view-main-action-area__right-block">
+          </div>
+        </div>
+
+        <div class="ag-table-wrapper" *ngIf="showAddEdit" style="overflow-x: hidden; overflow-y: scroll;">
+          <div class="page-content-area__header">
+            <h1 class="page-title">
+              {{'SysMenus.TitleEdit' | translate}}: {{modelEdit !== undefined? modelEdit.title : ''}}
+            </h1>
+          </div>
+          <div class="col-12 md:col-12">
+            <div class="col-12 md:col-12">
+              <form #formElement [formGroup]="formGroup">
+                <div class="col-12 md:col-12">
+                  <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+                  </validation-summary>
+                </div>
+
+                <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+                  <div class="field col-12 md:col-6">
+                    <label for="titleParent">{{'HtMenu.idParent' | translate}}</label>
+                    <input type="text" pInputText [(ngModel)]="modelEdit.titleParent" readonly
+                      formControlName="titleParent">
+
+                  </div>
+                  <div class="field col-12 md:col-6">
+                    <label for="code">{{'FORM.CODE' | translate}}</label>
+                    <input type="text" pInputText [(ngModel)]="modelEdit.code" formControlName="code">
+                  </div>
+                  <div class="field col-12 md:col-6">
+                    <label for="title">{{'FORM.TITLE' | translate}}</label>
+                    <input type="text" pInputText [(ngModel)]="modelEdit.title" formControlName="title">
+                  </div>
+                  <div class="field col-12 md:col-6">
+                    <label for="url">{{'Url' | translate}}</label>
+                    <input type="text" pInputText [(ngModel)]="modelEdit.url" formControlName="url">
+                  </div>
+                  <div class="field col-12 md:col-6">
+                    <label for="icon">{{'Icon' | translate}}</label>
+                    <input type="text" pInputText [(ngModel)]="modelEdit.icon" formControlName="icon">
+                  </div>
+                  <div class="field col-12 md:col-6">
+                    <label for="orderNo">{{'FORM.ORDERNO' | translate}}</label>
+                    <input type="text" pInputText [(ngModel)]="modelEdit.orderNo" formControlName="orderNo">
+
+                  </div>
+                  <div class="field col-12 md:col-6">
+                    <label for="permissions">{{'HtMenu.permissions' | translate}}</label>
+                    <textarea type="text" pInputText [(ngModel)]="modelEdit.permissions"
+                      formControlName="permissions"> </textarea>
+                  </div>
+                  <div class="field col-12 md:col-6">
+                    <label for="status">{{'FORM.STATUS' | translate}}</label>
+                    <p-dropdown formControlName="status" [options]="arrStatus" [autoDisplayFirst]="false"
+                      dropdownIcon="ci ci-chevron-down-1" appendTo="body" [(ngModel)]="modelEdit.status" [filter]="true"
+                      filterBy="label,value">
+                    </p-dropdown>
+                  </div>
+                </div>
+              </form>
+
+              <div class="col-12 md:col-12">
+                <div class="col-8 md:col-8 fl h-text-left">
+                  <button pButton pRipple type="button" label="{{'BUTTON.DELETE' | translate}}" icon="pi pi-trash"
+                    [disabled]="submitting" class="p-button-danger mr-2 mb-2" (click)="deleteNode()"
+                    *ngIf="modelEdit.id > 0" authorize="[{'core':'sysmenus/3'}]"></button>
+                </div>
+                <div class="col-4 md:col-4 fr h-text-right">
+
+                  <button pButton pRipple type="button" label="{{'BUTTON.SAVE' | translate}}" icon="pi pi-save"
+                    *ngIf="modelEdit.id == 0" [disabled]="submitting" class="p-button-success mr-2 mb-2"
+                    (click)="onSave()" authorize="[{'core':'sysmenus/1'}]"></button>
+                  <button pButton pRipple type="button" label="{{'BUTTON.SAVE' | translate}}" icon="pi pi-save"
+                    *ngIf="modelEdit.id > 0" [disabled]="submitting" class="p-button-success mr-2 mb-2"
+                    (click)="onSave()" authorize="[{'core':'sysmenus/2'}]"></button>
+                  &nbsp; &nbsp;
+                  <button pButton pRipple type="button" label="{{'BUTTON.CANCEL' | translate}}" icon="ci ci-redo"
+                    class="p-button-text mr-2 mb-2" (click)="onCancel()"></button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

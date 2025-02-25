@@ -1,0 +1,35 @@
+{
+  "production": false,
+  "hmr": false,
+  "apiDomain": {
+    "gateway": "",
+    "notificationHub": "",
+    "coreEndpoint": ""
+  },
+  "clientDomain": {
+    "appDomain": "http://localhost:8001",
+    "idPhanhe": "1"
+  },
+  "appMetadata": {
+    "main": {
+      "title": "BACKEND",
+      "owner": "VNPOST-OE",
+      "logo": "assets/images/logo3x.png",
+      "defaultAvatar": "/assets/images/avatar-default.png"
+    }
+  },
+  "authenticationSettings": {
+    "clientId": "vnpost-client",
+    "issuer": ""
+  },
+  "signalrConfig": {
+    "topic": {
+      "notificationCreated": "NotificationHub",
+      "viewUpdated": "ViewNotify"
+    },
+    "action": {
+      "notificationCreated": "NOTIFICATION.NOTIFICATION.CREATED",
+      "viewUpdated": "VIEWENGINE.VIEW.UPDATED"
+    }
+  }
+}

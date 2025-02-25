@@ -1,0 +1,31 @@
+{
+    "javascript.preferences.quoteStyle": "single",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/e2e": true,
+        "**/node_modules": true,
+        "**/.dockerignore": true,
+        "**/.editorconfig": true,
+        "**/.gitignore": true,
+        "**/debug.log": true,
+        "**/package-lock.json": true,
+        "**/karma*": true,
+        "**/projtractor*": true,
+        "**/Dockerfile": true,
+        "**/*.spec.ts": true,
+        "**/.angular": true,
+    },
+    "typescript.preferences.quoteStyle": "single",
+    "[scss]": {
+        "editor.formatOnSave": false
+    },
+    "editor.formatOnSave": true,
+    "alignment.exclude": [
+        "scss"
+    ],
+    "angular.enable-strict-mode-prompt": false
+}

@@ -1,0 +1,92 @@
+<p-dialog #dialog header="Thêm mới tài liệu tham khảo" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '1200px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div>
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="title">Tiêu đề <span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.title" autocomplete="off"
+            formControlName="title">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="author">Tác giả<span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.author" autocomplete="off"
+            formControlName="author">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="documentType">Loại tài liệu <span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.documentType" autocomplete="off"
+            formControlName="documentType">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="yearPublication">Năm xuất bản <span style="color: red;">*</span></label>
+            <p-calendar 
+            [(ngModel)]="itemDetail.yearPublication" 
+            formControlName="yearPublication"
+            [iconDisplay]="'input'" 
+            [showIcon]="true" 
+            inputId="icondisplay" />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="field">Lĩnh vực <span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.field" autocomplete="off"
+            formControlName="field">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="description">Mô tả<span style="color: red;">*</span></label>
+          <textarea 
+            rows="5" 
+            cols="30" 
+            [(ngModel)]="itemDetail.description"
+            pInputTextarea 
+            formControlName="description">
+          </textarea>
+        </div>
+        <div class="col-12 md:col-6">
+          <div class="file-upload-wrapper">
+            <label>File tài liệu tham khảo <span style="color: red;">*</span></label>
+            <p-fileUpload
+              #fileInput
+              mode="basic"
+              name="invoiceFile"
+              chooseIcon="pi pi-upload"
+              [maxFileSize]="5242880"
+              (onSelect)="onFileSelect($event)" 
+              [auto]="true"
+              chooseLabel="Chọn file"
+              [accept]="'.doc,.docx,.pdf'">
+            </p-fileUpload>
+            <div class="uploaded-file" *ngIf="selectedFile">
+              <a 
+              [href]="fileDownloadUrl" 
+              download="{{ selectedFile.name }}" 
+              class="file-link">
+                <i>{{ selectedFile.name }}</i>
+              </a>
+              <button type="button" (click)="removeFile(fileInput)" class="delete-btn">Xóa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+      </div>
+      <div class="col-4 md:col-4 fr">
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CLOSE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="saveAndClose()"></button>
+<!-- 
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CONTINUE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="save()"></button> -->
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

@@ -1,0 +1,111 @@
+<p-dialog #dialog [header]="'AzRoleMappingUsers.TitleEdit' | translate" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '1200px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div class="col-12 md:col-12">
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="userId">{{'AzRoleMappingUsers.userId' | translate}}</label>
+          <p-dropdown (onChange)="onChangeNguoiDung()" formControlName="userId" [options]="dsUsers"
+            [autoDisplayFirst]="false" dropdownIcon="ci ci-chevron-down-1" appendTo="body" [(ngModel)]="userId"
+            [virtualScroll]="true" [filter]="true" filterBy="label,value">
+          </p-dropdown>
+        </div>
+      </div>
+    </form>
+    <div class="col-12 md:col-12">
+      <div class="col-12">
+        <div class="data-view-main-action-area">
+          <div class="data-view-main-action-area__left-block" id="left-table-actions" style="flex: 1; min-width: 110px">
+            <button pButton pRipple type="button" icon="pi pi-plus" label="{{'BUTTON.ADD' | translate}}"
+              class=" p-button-warning mr-2 mb-2" (click)="onAddRole()"></button>
+          </div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <p-scrollPanel [style]="{'width': '100%', 'height': '100%'}">
+          <p-table [columns]="cols" [paginator]="false" [value]="dsAzRoleAdded"
+            class="ag-table -status-style-border-left" [style]="{'min-width': '1000px'}" [lazy]="true">
+            <ng-template pTemplate="colgroup">
+              <colgroup>
+                <col style="width: 50px">
+                <ng-container *ngFor="let col of cols">
+                  <col [style.width]="col.width ? col.width : 'auto'" [hidden]="!col.visible">
+                </ng-container>
+              </colgroup>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>
+                  <p-checkbox (onChange)="onChangeBulkSelection()" [(ngModel)]="isCheckAll" [binary]="true">
+                  </p-checkbox>
+                </th>
+                <ng-container *ngFor="let col of columns">
+                  <th *ngIf="col.sort" [hidden]="!col.visible" [pSortableColumn]="col.field">
+                    <div class="h-flex-el -h-space-between">
+                      <div class="h-overflow-break-word">{{col.header}}</div>
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </div>
+                  </th>
+                  <th *ngIf="!col.sort" [hidden]="!col.visible">
+                    <div class="h-overflow-break-word">{{col.header}}</div>
+                  </th>
+                </ng-container>
+                <th style="width: 200px;">{{'AzRoleMappingUsers.actions' | translate}}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr style="text-align: center">
+                <td style="width: 50px;">{{rowIndex + 1}}</td>
+                <td *ngFor="let col of columns;let i = index;" [ngSwitch]="col.field" [style.width]="col.width"
+                  [hidden]="!col.visible" [class.align-left]="col.align == 'left'" style="word-wrap: break-word;">
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                  <span *ngSwitchCase="'titleAzRole'">
+                    <p-dropdown appendTo="body" (onChange)="onChangeRole(rowData)" [filter]="true"
+                      [autoDisplayFirst]='false' [emptyFilterMessage]="'LIST.EMPTY' | translate" [options]="dsAzRoles"
+                      [(ngModel)]="rowData.idAzRole" [style]="{'width':'100%', 'min-width':'0'}">
+                    </p-dropdown>
+                  </span>
+                </td>
+                <td>
+                  <div class="tn-table-row-actions ui-text-right">
+                    <!-- <button pButton pRipple type="button" icon="ci ci-undo"
+                      class="p-button-rounded p-button-text mr-2 mb-2" pTooltip="{{'BUTTON.CANCEL' | translate}}"
+                      (click)="onCancelRole(rowData)" *ngIf="rowData.isEdit"></button>
+                    <button pButton pRipple type="button" icon="ci ci-save"
+                      class="p-button-rounded p-button-success p-button-text mr-2 mb-2"
+                      pTooltip="{{'BUTTON.SAVE' | translate}}" (click)="onCancelRole(rowData)"
+                      *ngIf="rowData.isEdit"></button>
+                    <button pButton pRipple type="button" icon="ci ci-edit"
+                      class="p-button-rounded p-button-text mr-2 mb-2" pTooltip="{{'BUTTON.EDIT' | translate}}"
+                      (click)="onEditRole(rowData)" *ngIf="!rowData.isEdit"></button> -->
+                    <button pButton pRipple type="button" icon="ci ci-delete"
+                      class="p-button-rounded p-button-danger p-button-text mr-2 mb-2"
+                      pTooltip="{{'BUTTON.DELETE' | translate}}" (click)="onDeleteRole(rowData)"></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-scrollPanel>
+      </div>
+    </div>
+
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+      </div>
+      <div class="col-4 md:col-4 fr">
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="save()"
+          authorize="[{'core':'azrolemappingusers/2'}]"></button>
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

@@ -1,0 +1,26 @@
+{
+    "apiDomain": {
+        "gateway": "http://localhost/gwlms",
+        "coreEndpoint": "http://localhost/gwlms/coreapi",
+        "notificationHub": "http://localhost/gwlms/notifi"
+    },
+    "authenticationSettings": {
+        "clientId": "vnpost-client",
+        "issuer": "http://localhost/gwlms/coreapi"
+    },
+    "clientDomain": {
+        "appDomain": "https://localhost:11201",
+        "idSystem": "1"
+    },
+    "appMetadata": {
+        "main": {
+            "fileAccept": "image/*,.doc,.docx,.xls,xlsm,.xlsx,ppt,pptm,pptx,.pdf,.rar,.zip,docm,dot,dotm,dotx,epub,htm,html,mht,odt,ott,rtf,txt,djvu,xps,csv,fods,ods,ots,xlt,xltm,xltx,fodp,odp,otp,pot,potm,potx,pps,ppsm,ppsx"
+        }
+    },
+    "signalrConfig": {
+        "topic": {
+            "notificationCreated": "NotificationHub",
+            "viewUpdated": "ViewNotify"
+        }
+    }
+}

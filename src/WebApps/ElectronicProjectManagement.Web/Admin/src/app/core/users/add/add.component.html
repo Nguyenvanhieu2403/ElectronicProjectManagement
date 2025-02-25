@@ -1,0 +1,160 @@
+<p-dialog
+  #dialog
+  [header]="'Users.TitleAdd' | translate"
+  [(visible)]="isShow"
+  [modal]="true"
+  [styleClass]="'ag-modal force-full-width'"
+  [style]="{ width: '1200px' }"
+  closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize"
+  minimizeIcon="ci ci-minimize"
+  [maximizable]="true"
+  [autoZIndex]="true"
+>
+  <p-confirmDialog
+    key="positionDialog"
+    [position]="'center'"
+    rejectButtonStyleClass="p-button-outlined"
+  />
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div class="col-12 md:col-12">
+        <validation-summary
+          #validationSummary
+          [formElement]="formElement"
+          [formGroup]="formGroup"
+        >
+        </validation-summary>
+      </div>
+
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="unitCode"
+            >{{ "Users.unitCode" | translate }}
+            <span style="color: red">*</span></label
+          >
+          <!-- <input type="text" pInputText [(ngModel)]="itemDetail.unitCode" formControlName="unitCode"> -->
+          <p-dropdown
+            [options]="listUnit"
+            [(ngModel)]="itemDetail.unitCode"
+            [filter]="true"
+            filterBy="label,value"
+            appendTo="body"
+            [virtualScroll]="true"
+            [virtualScrollItemSize]="10"
+            formControlName="unitCode"
+          >
+          </p-dropdown>
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="userName"
+            >{{ "Users.userName" | translate }}
+            <span style="color: red">*</span></label
+          >
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.userName"
+            formControlName="userName"
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="displayName"
+            >{{ "Users.displayName" | translate }}
+            <span style="color: red">*</span></label
+          >
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.displayName"
+            formControlName="displayName"
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="passwordHash"
+            >{{ "Users.passwordHash" | translate }}
+            <span style="color: red">*</span>
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-question-circle"
+              class="p-button-rounded p-button-text"
+              style="
+                padding: 0 !important;
+                height: auto !important;
+                color: gray !important;
+              "
+              pTooltip="{{ 'BUTTON.INVALIDPASSWORD' | translate }}"
+            ></button>
+          </label>
+          <!-- <input type="password" pInputText [(ngModel)]="itemDetail.passwordHash" autocomplete="off" name="passwordHash"
+            formControlName="passwordHash"> -->
+          <p-password
+            [(ngModel)]="itemDetail.passwordHash"
+            [toggleMask]="true"
+            formControlName="passwordHash"
+            appendTo="body"
+            [feedback]="false"
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="confirmPassword"
+            >{{ "Users.confirmPassword" | translate }}
+            <span style="color: red">*</span></label
+          >
+          <!-- <input type="password" pInputText [(ngModel)]="itemDetail.confirmPassword" autocomplete="off" name="confirmPassword"
+            formControlName="confirmPassword"> -->
+          <p-password
+            [(ngModel)]="itemDetail.confirmPassword"
+            formControlName="confirmPassword"
+            [toggleMask]="true"
+            [feedback]="false"
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="email">{{ "Users.email" | translate }}</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.email"
+            formControlName="email"
+          />
+        </div>
+      </div>
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid"></div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left"></div>
+      <div class="col-4 md:col-4 fr">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="{{ 'BUTTON.SAVE_CLOSE' | translate }}"
+          icon="pi pi-save"
+          *ngIf="itemDetail.id == 0"
+          [disabled]="submitting"
+          class="p-button mr-2 mb-2"
+          (click)="saveAndClose()"
+          authorize="[{'core':'users/1'}]"
+        ></button>
+
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="{{ 'BUTTON.SAVE_CONTINUE' | translate }}"
+          icon="pi pi-save"
+          *ngIf="itemDetail.id == 0"
+          [disabled]="submitting"
+          class="p-button mr-2 mb-2"
+          (click)="save()"
+          authorize="[{'core':'users/1'}]"
+        ></button>
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

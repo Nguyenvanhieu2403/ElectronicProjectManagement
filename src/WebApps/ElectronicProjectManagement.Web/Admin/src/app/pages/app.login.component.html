@@ -1,0 +1,181 @@
+<div class="h-screen flex w-full surface-ground col-12 md:col-12">
+  <div
+    class="flex flex-column col-12 md:col-3 surface-ground align-items-center justify-content-center"
+    *ngIf="enableLogin"
+    style="justify-content: start !important"
+  >
+    <div class="">
+      <div
+        class="flex flex-column col-12 md:col-11 align-items-center"
+        style="margin: 3rem 0 !important"
+      >
+        <img
+          src="assets/layout/images/logo_eaut.png"
+          style="width: 200px"
+          alt=""
+        />
+      </div>
+      <div
+        class="flex flex-column col-12 md:col-11"
+        style="text-align: center !important"
+      >
+        <h3>{{ "LOGIN.TITLE" | translate }}</h3>
+        <span class="block text-700 mt-2">{{
+          "LOGIN.DETAIL" | translate
+        }}</span>
+      </div>
+      <div class="flex flex-column col-12 md:col-11 gap-3 mt-6">
+        <form [formGroup]="formGroup">
+          <div class="grid p-fluid">
+            <div class="field col-12 md:col-12">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                  <i class="pi pi-user"></i>
+                </span>
+                <span class="p-float-label">
+                  <input
+                    type="text"
+                    pInputText
+                    [(ngModel)]="model.username"
+                    formControlName="username"
+                    [ngClass]="{
+                      'ng-invalid ng-dirty':
+                        formGroup.get('username').errors?.required || error
+                    }"
+                  />
+                  <label for="username">{{
+                    "LOGIN.USERNAME" | translate
+                  }}</label>
+                </span>
+              </div>
+            </div>
+            <div class="field col-12 md:col-12">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                  <i class="pi pi-lock"></i>
+                </span>
+                <span class="p-float-label">
+                  <input
+                    type="password"
+                    (focus)="onFocus()"
+                    [(ngModel)]="model.password"
+                    (keyup.enter)="clickLogin()"
+                    formControlName="password"
+                    pInputText
+                  />
+                  <label for="password">{{
+                    "LOGIN.PASSWORD" | translate
+                  }}</label>
+                </span>
+              </div>
+            </div>
+            <!-- <div class="field col-12 md:col-12">
+              <p-checkbox formControlName="isSSOAccount" [(ngModel)]="isSSOAccount" label="Sử dụng tài khoản SSO" [binary]="true" />
+            </div> -->
+          </div>
+        </form>
+        <div>
+          <p-button
+            class="login-button"
+            styleClass="w-full"
+            label="{{ 'LOGIN.BTNLOGIN' | translate }}"
+            (click)="clickLogin()"
+          >
+          </p-button>
+        </div>
+        <!-- <div>
+          <p-button label="{{'LOGIN.FORGOTPASSWORD' | translate}}" styleClass="p-button-link w-full"
+            (click)="goForgotPass()">
+          </p-button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="flex flex-column col-12 md:col-3 surface-ground align-items-center justify-content-center"
+    *ngIf="!enableLogin"
+    style="width: 25% !important; justify-content: start !important"
+  >
+    <div class="">
+      <div
+        class="flex flex-column col-12 md:col-11 align-items-center"
+        style="margin: 3rem 0 !important"
+      >
+        <img
+          src="assets/layout/images/logo_eaut.png"
+          style="width: 200px"
+          alt=""
+        />
+      </div>
+      <div
+        class="flex flex-column col-12 md:col-11"
+        style="text-align: center !important"
+      >
+        <h2>{{ "LOGIN.FORGOTPASSWORD.TITLE" | translate }}</h2>
+        <span class="block text-700 mt-2">{{
+          "LOGIN.FORGOTPASSWORD.DETAIL" | translate
+        }}</span>
+      </div>
+      <div class="flex flex-column col-12 md:col-11 gap-3 mt-6">
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user"></i>
+          </span>
+          <span class="p-float-label">
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="model.username"
+              [ngClass]="{ 'ng-invalid ng-dirty': !model.username || error }"
+            />
+            <label for="username">{{ "LOGIN.USERNAME" | translate }}</label>
+          </span>
+        </div>
+        <div class="p-inputgroup mt-3 mb-3">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-envelope"></i>
+          </span>
+          <span class="p-float-label">
+            <input
+              type="email"
+              (focus)="onFocus()"
+              [(ngModel)]="model.email"
+              [ngClass]="{ 'ng-invalid ng-dirty': !model.email || error }"
+              (keyup.enter)="onResetPassword()"
+              pInputText
+            />
+            <label for="email">{{ "LOGIN.EMAIL" | translate }}</label>
+          </span>
+        </div>
+        <div>
+          <p-button
+            class="login-button"
+            styleClass="w-full"
+            label="{{ 'LOGIN.RESETPASS' | translate }}"
+            (click)="onResetPassword()"
+          >
+          </p-button>
+        </div>
+        <div>
+          <p-button
+            label="{{ 'LOGIN.RETURN' | translate }}"
+            styleClass="p-button-link w-full"
+            (click)="goForgotPass()"
+          >
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="lg:flex col-12 md:col-9 align-items-center justify-content-center"
+  >
+    <img
+      src="assets/layout/images/pages/background_eaut.jpg"
+      alt=""
+      style="width: -webkit-fill-available; height: -webkit-fill-available"
+    />
+    <!-- style="background: url(&quot;assets/layout/images/pages/roadvnpost.png&quot;);" -->
+  </div>
+</div>

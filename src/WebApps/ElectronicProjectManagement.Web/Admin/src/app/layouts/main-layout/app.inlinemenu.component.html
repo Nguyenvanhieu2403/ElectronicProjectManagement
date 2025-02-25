@@ -1,0 +1,39 @@
+<div [ngClass]="{'layout-inline-menu': true, 'layout-inline-menu-active':appMain.inlineMenuActive[key]}"
+  [ngStyle]="style" [class]="styleClass">
+  <a class="layout-inline-menu-action flex dir-row align-items-center justify-content-center"
+    [ngClass]="appMain.isHorizontal() ? 'p-2 lg:col-1 p-py-3' : 'p-2'" (click)="onClick($event)"
+    pTooltip="{{currentUser.displayName}}" [tooltipDisabled]="isTooltipDisabled">
+    <img src="assets/images/avatar-default.png" alt="avatar" style="width: 32px; height: 32px;">
+    <span class="flex flex-column " [ngClass]="{'ml-2': !app.isRTL, 'mr-2': app.isRTL}">
+      <span class="font-bold">{{currentUser.displayName}}</span>
+    </span>
+    <i class="layout-inline-menu-icon pi pi-angle-down" [ngClass]="{'ml-auto': !app.isRTL, 'mr-auto': app.isRTL}"></i>
+  </a>
+  <ul class="layout-inline-menu-action-panel"
+    [@menu]="appMain.inlineMenuActive[key] ? isHorizontalActive() ? 'visible' : 'visibleAnimated' : isHorizontalActive() ? 'hidden' : 'hiddenAnimated'">
+    <li class="layout-inline-menu-action-item">
+      <a class="p-d-flex p-flex-row p-ai-center" [attr.tabindex]="tabIndex" [routerLink]="['/core/myprofile']">
+        <i class="pi pi-cog pi-fw"></i>
+        <span>{{'USERINFO.MNU_INFO' | translate}}</span>
+      </a>
+    </li>
+    <!-- <li class="layout-inline-menu-action-item" [routerLink]="['/core/notifications']">
+      <a class="p-d-flex p-flex-row p-ai-center" [attr.tabindex]="tabIndex">
+        <i class="pi pi-bell pi-fw"></i>
+        <span>{{'USERINFO.NOTIFICATIONS' | translate}}</span>
+      </a>
+    </li> -->
+    <!-- <li class="layout-inline-menu-action-item" pTooltip="Support" [tooltipDisabled]="isTooltipDisabled">
+            <a class="p-d-flex p-flex-row p-ai-center" [attr.tabindex]="tabIndex">
+                <i class="pi pi-compass pi-fw"></i>
+                <span>Support</span>
+            </a>
+        </li> -->
+    <li class="layout-inline-menu-action-item" (click)="appMain.onLogout()">
+      <a class="d-flex flex-row p-ai-center" [attr.tabindex]="tabIndex">
+        <i class="pi pi-power-off pi-fw"></i>
+        <span>{{'USERINFO.MNU_LOGOUT' | translate}}</span>
+      </a>
+    </li>
+  </ul>
+</div>

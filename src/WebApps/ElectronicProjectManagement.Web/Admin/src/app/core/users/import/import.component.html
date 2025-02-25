@@ -1,0 +1,176 @@
+<p-dialog
+  #dialog
+  [header]="'FORMIMPORT_TITLE' | translate"
+  [(visible)]="isShow"
+  [modal]="true"
+  [styleClass]="'ag-modal force-full-width'"
+  [style]="{ width: '1200px' }"
+  closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize"
+  minimizeIcon="ci ci-minimize"
+  [maximizable]="true"
+  [autoZIndex]="true"
+>
+  <p-tabView *ngIf="dataSource.length > 0">
+    <p-tabPanel header="{{ 'FORMIMPORT_TitlePanelData' | translate }}">
+      <div class="col-12 md:col-12">
+        <div class="data-view-area">
+          <div class="data-view-area__main-block">
+            <div class="table-wrapper">
+              <p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+                <p-table
+                  [columns]="cols"
+                  [value]="dataSource"
+                  class="ag-table"
+                  [style]="{ 'min-width': '1000px' }"
+                  [lazy]="true"
+                >
+                  <ng-template pTemplate="colgroup">
+                    <colgroup>
+                      <ng-container *ngFor="let col of cols">
+                        <col
+                          [style.width]="col.width ? col.width : 'auto'"
+                          [hidden]="!col.visible"
+                        />
+                      </ng-container>
+                    </colgroup>
+                  </ng-template>
+
+                  <ng-template pTemplate="header" let-columns>
+                    <tr>
+                      <ng-container *ngFor="let col of columns">
+                        <th
+                          *ngIf="col.sort"
+                          [pSortableColumn]="col.field"
+                          [hidden]="!col.visible"
+                        >
+                          <div class="flex-el space-between">
+                            <div class="overflow-break-word">
+                              {{ col.header }}
+                            </div>
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                          </div>
+                        </th>
+                        <th *ngIf="!col.sort" [hidden]="!col.visible">
+                          <div class="overflow-break-word">
+                            {{ col.header }}
+                          </div>
+                        </th>
+                      </ng-container>
+                    </tr>
+                  </ng-template>
+                  <ng-template
+                    pTemplate="body"
+                    let-rowData
+                    let-columns="columns"
+                    let-rowIndex="rowIndex"
+                  >
+                    <tr
+                      [class.ag-tr-status]="rowData.status"
+                      [class.ag-tr-status-danger]="rowData.status === 3"
+                      [class.ag-tr-status-warning]="rowData.status === 2"
+                      [class.ag-tr-status-success]="rowData.status === 1"
+                    >
+                      <td
+                        *ngFor="let col of columns"
+                        [hidden]="!col.visible"
+                        [ngSwitch]="col.field"
+                      >
+                        <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </p-scrollPanel>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="{{ 'FORMIMPORT_TitlePanelDataErr' | translate }}">
+      <div class="col-12 md:col-12">
+        {{ dataError.toString() }}
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+
+  <div class="col-12 md:col-12">
+    <div class="col-12 md:col-12 grid" *ngIf="dataSource.length === 0">
+      <div class="p-field col-12 md:col-12">
+        <label for="code">{{
+          "FORMIMPORT_LBLDOWNLOADTEMPLATE" | translate
+        }}</label>
+      </div>
+      <div class="p-field col-12 md:col-12">
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-download"
+          class="p-button-info mr-2 mb-2"
+          label="{{ 'FORMIMPORT_DOWNLOAD' | translate }}"
+          (click)="downloadForm()"
+        ></button>
+      </div>
+    </div>
+    <div class="col-12 md:col-12" *ngIf="dataSource.length === 0">
+      <div class="p-field col-12 md:col-12">
+        <label>{{ "FORMIMPORT_SelectedFile" | translate }}</label>
+        <p-fileUpload
+          #fileControl
+          (onBeforeUpload)="onBeforeUpload()"
+          [multiple]="false"
+          [disabled]="submitting"
+          showUploadButton="false"
+          customUpload="true"
+          (uploadHandler)="myUploader($event)"
+          name="files"
+          maxFileSize="10000000"
+          accept=".xlsx, .xsl"
+          chooseLabel="{{ 'FORMIMPORT_lblSelectFile' | translate }}"
+          uploadLabel="{{ 'FORMIMPORT_lblUpload' | translate }}"
+          cancelLabel="{{ 'FORMIMPORT_lblCancel' | translate }}"
+        >
+        </p-fileUpload>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 md:col-12">
+    <p-progressBar
+      mode="indeterminate"
+      [style]="{ height: '6px' }"
+      *ngIf="isUploading"
+    ></p-progressBar>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left"></div>
+      <div class="col-4 md:col-4 fr">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="{{ 'BUTTON.SAVE' | translate }}"
+          icon="pi pi-save"
+          [disabled]="submitting"
+          class="p-button mr-2 mb-2"
+          *ngIf="dataSource.length > 0"
+          (click)="onImport()"
+          authorize="[{'core':'users/1'}]"
+        ></button>
+
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-upload"
+          class="p-button-info mr-2 mb-2"
+          *ngIf="dataSource.length === 0"
+          authorize="[{'core':'users/1'}]"
+          label="{{ 'BUTTON.UPLOAD' | translate }}"
+          (click)="onUpload()"
+        ></button>
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

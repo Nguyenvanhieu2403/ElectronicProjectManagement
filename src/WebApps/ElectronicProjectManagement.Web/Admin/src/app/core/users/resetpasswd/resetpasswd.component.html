@@ -1,0 +1,29 @@
+<p-dialog #dialog header="{{'Users.ResetRasswordTitle' |translate}}: {{itemDetail.userName}}" [(visible)]="isShow"
+  [modal]="true" [styleClass]="'ag-modal force-full-width'" closeIcon="ci ci-close" [style]="{'width': '700px'}"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div class="col-12 md:col-12">
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="p-field col-12 md:col-12">
+          <label for="newPassword">{{'USERINFO.NEWPASSWORD' | translate}}</label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.newPassword" formControlName="newPassword">
+        </div>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+      </div>
+      <div class="col-4 md:col-4 fr">
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE' | translate}}" icon="pi pi-save"
+          *ngIf="itemDetail.id > 0" [disabled]="submitting" class="p-button mr-2 mb-2" (click)="restorePassword()"
+          authorize="[{'core':'users/11'}]"></button>
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

@@ -1,0 +1,56 @@
+<p-dialog #dialog header="{{ 'AzServices.TitleEdit' | translate }}" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '1200px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div class="col-12 md:col-12">
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="code">{{'FORM.CODE' | translate}}</label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.code" formControlName="code">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="title">{{'FORM.TITLE' | translate}}</label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.title" formControlName="title">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="description">{{'FORM.DESCRIPTION' | translate}}</label>
+          <textarea inputId="textarea" rows="3" cols="30" formControlName="description"
+            [(ngModel)]="itemDetail.description" pInputTextarea></textarea>
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="status">{{'FORM.STATUS' | translate}}</label>
+          <p-dropdown formControlName="status" [options]="arrStatus" [autoDisplayFirst]="false"
+            dropdownIcon="ci ci-chevron-down-1" appendTo="body" [(ngModel)]="itemDetail.status" [filter]="true"
+            filterBy="label,value">
+          </p-dropdown>
+        </div>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+        <button pButton pRipple type="button" label="{{'BUTTON.DELETE' | translate}}" icon="pi pi-trash"
+          [disabled]="submitting" class="p-button-danger mr-2 mb-2" (click)="delete()" *ngIf="itemDetail.id > 0"
+          authorize="[{'core':'azservices/3'}]"></button>
+      </div>
+
+      <div class="col-4 md:col-4 fr">
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CLOSE' | translate}}" icon="pi pi-save"
+          *ngIf="itemDetail.id == 0" [disabled]="submitting" class="p-button mr-2 mb-2" (click)="saveAndClose()"
+          authorize="[{'core':'azservices/1'}]"></button>
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CONTINUE' | translate}}" icon="pi pi-save"
+          *ngIf="itemDetail.id == 0" [disabled]="submitting" class="p-button mr-2 mb-2" (click)="save()"
+          authorize="[{'core':'azservices/1'}]"></button>
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE' | translate}}" icon="pi pi-save"
+          *ngIf="itemDetail.id > 0" [disabled]="submitting" class="p-button mr-2 mb-2" (click)="saveAndClose()"
+          authorize="[{'core':'azservices/2'}]"></button>
+
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

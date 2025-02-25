@@ -1,0 +1,53 @@
+<div class="layout-wrapper" [ngClass]="{'p-input-filled': app.inputStyle === 'filled', 'p-ripple-disabled': !app.ripple,
+        'layout-menu-static': isStatic(),
+        'layout-menu-overlay': isOverlay(),
+        'layout-menu-horizontal': isHorizontal(),
+        'layout-menu-slim': isSlim(),
+        'layout-menu-active': menuActive,
+        'layout-menu-mobile-active': mobileMenuActive,
+        'layout-topbar-mobile-active': mobileTopbarActive,
+        'layout-rightmenu-active': rightMenuActive,
+        'layout-rtl': app.isRTL}" [class]="'layout-menu-' + app.menuTheme + ' layout-topbar-' + app.topbarTheme">
+
+  <app-topbar></app-topbar>
+
+  <!-- <app-rightmenu></app-rightmenu> -->
+
+  <div class="menu-wrapper" (click)="onMenuClick($event)">
+    <div class="layout-menu-container">
+      <app-inline-menu *ngIf="app.inlineMenuPosition=='top' || app.inlineMenuPosition=='both'" key="top">
+      </app-inline-menu>
+      <app-menu></app-menu>
+      <app-inline-menu *ngIf="app.inlineMenuPosition=='bottom' || app.inlineMenuPosition=='both'" key="bottom">
+      </app-inline-menu>
+    </div>
+  </div>
+
+  <div class="layout-main">
+    <!-- <app-breadcrumb></app-breadcrumb> -->
+
+    <div class="layout-content page-content-area-wrapper">
+
+      <router-outlet></router-outlet>
+
+    </div>
+
+    <!-- <app-footer></app-footer> -->
+  </div>
+
+  <!-- <app-config></app-config> -->
+
+  <div *ngIf="mobileMenuActive" class="layout-mask modal-in"></div>
+
+</div>
+
+<p-toast position="bottom-right" key="success-warn"></p-toast>
+
+<p-toast position="bottom-right" key="general-warning"></p-toast>
+
+<p-toast [style]="{marginTop: '60px'}" position="top-right" key="general-info"></p-toast>
+
+<p-toast [style]="{marginTop: '60px'}" position="top-right" key="error"></p-toast>
+
+<p-confirmDialog [autoZIndex]="true" acceptButtonStyleClass="p-button-text" rejectButtonStyleClass="p-button-text">
+</p-confirmDialog>

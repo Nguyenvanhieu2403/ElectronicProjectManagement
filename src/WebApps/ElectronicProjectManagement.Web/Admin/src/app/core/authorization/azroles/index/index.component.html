@@ -1,0 +1,173 @@
+<div class="page-content-area">
+  <div class="page-content-area__header">
+    <div class="page-title-area">
+      <div class="page-title-area__left-block">
+        <h1 class="page-title">
+          {{'AzRoles.Title' | translate}}
+        </h1>
+      </div>
+      <div class="page-title-area__right-block">
+        <div (clickOutside)="closeTableFilter()" [class.-show-clear]="query"
+          class="ag-search-box -size-small -has-search-adv ag-custom-overlay-panel-wrapper">
+          <input class="ag-search-box__input" type="text" placeholder="{{'LIST.SEARCH_PLACEHODE' | translate}}"
+            [(ngModel)]="query" (keyup.enter)="onSearch()" />
+          <span class="ci ci-search ag-search-box__search-icon"></span>
+          <span tabindex="0" class="ci ci-close ag-search-box__clear-icon" (click)="query = ''"></span>
+          <span tabindex="0" (click)="openSearchAdv = !openSearchAdv"
+            class="ag-search-box__adv-toggle ci ci-chevron-down-1"></span>
+
+          <div [hidden]="!openSearchAdv"
+            class="ag-custom-overlay-panel -bottom-left ag-table-filter-dropdown h-px-12 h-pt-24 p-formgrid grid"
+            style="width: 470px;">
+            <div class="field col-12 p-fluid">
+              <div class="p-float-label md:col-12">
+                <p-dropdown [filter]="true" [options]="dsAzService" [(ngModel)]="idAzService">
+                </p-dropdown>
+              </div>
+              <div class="p-float-label md:col-12">
+                <p-dropdown [filter]="true" [options]="arrStatus" [(ngModel)]="status">
+                </p-dropdown>
+              </div>
+            </div>
+            <div class="p-field col-12 md:col-12">
+              <div class="col-6 md:col-6 fl">
+                <button pButton pRipple type="button" label="{{'BUTTON.SEARCH_CANCEL' | translate}}" icon="pi pi-trash"
+                  class="p-button-danger" (click)="onCancelSearch()"></button>
+              </div>
+              <div class="col-6 md:col-6 fr h-text-right">
+                <button pButton pRipple type="button" label="{{'BUTTON.SEARCH' | translate}}" icon="pi pi-search"
+                  class="p-button-info" (click)="onSearch()"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-content-area__body">
+    <div class="data-view-area">
+      <div class="data-view-area__main-block">
+        <div class="data-view-main-action-area">
+          <div class="data-view-main-action-area__left-block" id="left-table-actions" style="flex: 1; min-width: 110px">
+            <button pButton pRipple type="button" icon="pi pi-plus" label="{{'BUTTON.ADD' | translate}}"
+              class=" p-button-success mr-2 mb-2" (click)="add()" authorize="[{'core':'azroles/1'}]"></button>
+            <button pButton pRipple type="button" icon="pi pi-refresh" class=" p-button-info mr-2 mb-2"
+              pTooltip="{{'BUTTON.RELOAD' | translate}}" (click)="onSearch()"></button>
+          </div>
+          <div class="data-view-main-action-area__right-block">
+            <div class="mb-8">{{(pageIndex -1) * pageSize + 1}} - {{pageIndex * pageSize}} {{'LIST.OFF' |
+              translate}} {{totalRecord}}
+            </div>
+            <button pButton pRipple type="button" icon="pi pi-angle-left" (click)="onPrePage()"
+              [disabled]="pageIndex == 1" class="p-button-rounded p-button-text mr-2 mb-2"></button>
+
+            <button pButton pRipple type="button" icon="pi pi-angle-right" (click)="onNextPage()"
+              [disabled]="pageIndex > totalRecord / pageSize" class="p-button-rounded p-button-text mr-2 mb-2"></button>
+
+            <button pButton pRipple type="button" icon="ci ci-data-1" (click)="visibleCols.toggle($event)"
+              class="p-button-rounded p-button-text mr-2 mb-2"></button>
+
+            <p-overlayPanel #visibleCols [hideTransitionOptions]="'0ms'" [showTransitionOptions]="'0ms'" appendTo="body"
+              styleClass="ag-overlay-menu style-2">
+              <div class="ag-overlay-menu__title">
+                <span (click)="resetColsVisibility()" class="ag-overlay-menu__clear-btn">
+                  {{getVisibleColsNumber()}}
+                  <span class="ag-overlay-menu__clear-icon ci ci-close"></span>
+                </span>
+
+                <span class="__text">
+                  {{'LIST.COLS_SELECTED' | translate}}
+                </span>
+              </div>
+
+              <div *ngFor="let col of cols" [class.-activated]="col.visible" class="ag-overlay-menu__item-wrapper">
+                <div class="ag-overlay-menu__item">
+                  <p-checkbox [(ngModel)]="col.visible" [label]="col.header" binary="true">
+                  </p-checkbox>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
+        </div>
+
+        <div [hidden]="selectedItems && !selectedItems.length" class="data-view-record-action-area">
+          <div class="data-view-record-action-area__left-block" style="flex: 1 1 400px">
+            <div class="h-ml-16 h-mb-8 h-mr-28 data-view-selected-record-number">
+              {{selectedItems.length}} {{'LIST.ROWS_SELECTED' | translate}}
+            </div>
+            <button pButton pRipple type="button" icon="ci ci-edit" [hidden]="isMultiEdit"
+              class="p-button-rounded p-button-text mr-2 mb-2" (click)="edit()" authorize="[{'core':'azroles/2'}]"
+              pTooltip="{{'BUTTON.EDIT' | translate }}">
+            </button>
+            <button pButton pRipple type="button" icon="ci ci-list-dropdown" [hidden]="isMultiEdit"
+              class="p-button-rounded p-button-text mr-2 mb-2" (click)="viewPermisions()"
+              pTooltip="{{'AzRoles.viewPermisions' | translate }}">
+            </button>
+            <button pButton pRipple type="button" icon="ci ci-delete" [hidden]="isMultiEdit"
+              class="p-button-rounded p-button-text mr-2 mb-2" (click)="delete()" authorize="[{'core':'azroles/3'}]"
+              pTooltip="{{'BUTTON.DELETE' | translate }}">
+            </button>
+          </div>
+
+          <div class="data-view-record-action-area__right-block">
+            <button pButton pRipple type="button" icon="ci ci-close" class="p-button-rounded p-button-text mr-2 mb-2"
+              (click)="resetBulkSelect()"></button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <p-table [columns]="cols" [value]="dataSource" class="ag-table -status-style-border-left" [rows]="pageSize"
+            [totalRecords]="totalRecord" [customSort]="true" (onSort)="onSort($event)" [scrollable]="true"
+            (onPage)="onPage($event)" [loading]="isLoading" [lazy]="true">
+            <ng-template pTemplate="colgroup">
+              <colgroup>
+                <col style="width: 50px">
+                <ng-container *ngFor="let col of cols">
+                  <col [style.width]="col.width ? col.width : 'auto'" [hidden]="!col.visible">
+                </ng-container>
+              </colgroup>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>
+                  <p-checkbox (onChange)="onChangeBulkSelection()" [(ngModel)]="isCheckAll" [binary]="true">
+                  </p-checkbox>
+                </th>
+                <ng-container *ngFor="let col of columns">
+                  <th *ngIf="col.sort" [hidden]="!col.visible" [pSortableColumn]="col.field">
+                    <div class="h-flex-el -h-space-between">
+                      <div class="h-overflow-break-word">{{col.header}}</div>
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </div>
+                  </th>
+                  <th *ngIf="!col.sort" [hidden]="!col.visible">
+                    <div class="h-overflow-break-word">{{col.header}}</div>
+                  </th>
+                </ng-container>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [class.ag-tr-status]="rowData.status" [class.ag-tr-status-danger]="rowData.status === 3"
+                [class.ag-tr-status-warning]="rowData.status === 2" [class.ag-tr-status-success]="rowData.status === 1">
+                <td>
+                  <p-checkbox name="group" [value]="rowData" (onChange)="checkSelectionState()"
+                    [(ngModel)]="selectedItems"></p-checkbox>
+                </td>
+
+                <td *ngFor="let col of columns" [hidden]="!col.visible" [ngSwitch]="col.field">
+                  <span *ngSwitchCase="'modified'">
+                    {{rowData.modified | date:'dd/MM/yyyy HH:mm'}}
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-azroles-form (closePopup)="onPopupClosed($event)" #pEdit></app-azroles-form>

@@ -1,0 +1,73 @@
+<p-dialog #dialog [header]="'Users.TitleEdit' | translate" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '1200px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div class="col-12 md:col-12">
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="unitCode">{{'Users.unitCode' | translate}} <span style="color: red;">*</span></label>
+          <!-- <input type="text" pInputText [(ngModel)]="itemDetail.unitCode" formControlName="unitCode"> -->
+          <p-dropdown [options]="listUnit" [(ngModel)]="itemDetail.unitCode" [filter]="true" filterBy="label,value" [virtualScroll]="true" [virtualScrollItemSize]="10" appendTo="body" [readonly]="true"
+            formControlName="unitCode">
+          </p-dropdown>
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="userName">{{'Users.userName' | translate}} <span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.userName" formControlName="userName" [readOnly]="true">
+
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="displayName">{{'Users.displayName' | translate}} <span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.displayName" formControlName="displayName">
+        </div>
+        <!-- <div class="field col-12 md:col-3">
+          <label for="dateOfBirth">{{'Users.dateOfBirth' | translate}}</label>
+          <p-calendar [showIcon]="true" [(ngModel)]="itemDetail.dateOfBirth" formControlName="dateOfBirth"
+            appendTo="body" icon="ci ci-calendar" dateFormat="dd/mm/yy" placeholder="dd/mm/yyy">
+          </p-calendar>
+        </div>
+        <div class="field col-12 md:col-3">
+          <label for="dateOfBirth">{{'Users.gender' | translate}}</label>
+          <div class="p-field-radiobutton">
+            <p-radioButton formControlName="gender" name="gender" [label]="'Users.gender1' | translate" [value]="1"
+              [(ngModel)]="itemDetail.gender">
+            </p-radioButton>&nbsp; &nbsp;
+            <p-radioButton formControlName="gender" name="gender" [label]="'Users.gender0' | translate" [value]="0"
+              [(ngModel)]="itemDetail.gender"></p-radioButton>
+          </div>
+        </div> -->
+        <div class="field col-12 md:col-6">
+          <label for="status">{{'FORM.STATUS' | translate}}</label> <span style="color: red;">*</span>
+          <p-dropdown formControlName="status" [options]="arrStatus" [autoDisplayFirst]="false"
+            dropdownIcon="ci ci-chevron-down-1" appendTo="body" [(ngModel)]="itemDetail.status" [filter]="true"
+            [virtualScroll]="true"
+            filterBy="label,value">
+          </p-dropdown>
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="email">{{'Users.email' | translate}}</label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.email" formControlName="email">
+        </div>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+        <button pButton pRipple type="button" label="{{'BUTTON.DELETE' | translate}}" icon="pi pi-trash"
+          [disabled]="submitting" class="p-button-danger mr-2 mb-2" (click)="delete()"
+          authorize="[{'core':'users/3'}]"></button>
+      </div>
+
+      <div class="col-4 md:col-4 fr">
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="saveAndClose()"
+          authorize="[{'core':'users/2'}]"></button>
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

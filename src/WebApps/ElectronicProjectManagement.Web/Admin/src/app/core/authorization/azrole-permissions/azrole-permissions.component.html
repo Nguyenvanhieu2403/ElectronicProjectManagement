@@ -1,0 +1,73 @@
+<div class="page-content-area">
+  <div class="page-content-area__header">
+    <div class="page-title-area">
+      <div class="page-title-area__left-block">
+        <h1 class="page-title">
+          {{'AzRolePermisssions.Title' | translate}}: {{itemDetail.title}}
+        </h1>
+      </div>
+      <div class="page-title-area__right-block">
+      </div>
+    </div>
+  </div>
+  <div class="page-content-area__body">
+    <div class="data-view-area">
+      <div class="data-view-area__main-block">
+        <div class="data-view-main-action-area">
+          <div class="data-view-main-action-area__left-block" id="left-table-actions" style="flex: 1; min-width: 110px">
+            <button pButton pRipple type="button" label="{{'BUTTON.SAVE' | translate}}" icon="pi pi-save"
+              [disabled]="isLoading" class="p-button mr-2 mb-2" (click)="save()"
+              authorize="[{'core':'azrolepermissions/2'}]"></button>
+            <button pButton pRipple type="button" icon="pi pi-refresh" class=" p-button-info mr-2 mb-2"
+              pTooltip="{{'BUTTON.RELOAD' | translate}}" (click)="onSearch()"></button>
+          </div>
+          <div class="data-view-main-action-area__right-block">
+            <button pButton pRipple type="button" icon="ci ci-undo" label="{{'BUTTON.BTNRETURN' | translate}}"
+              class=" p-button-default mr-2 mb-2" (click)="back()"></button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <p-scrollPanel [style]="{'width': '100%', 'height': '100%'}">
+            <div class="p-datatable p-component" style="min-width: 1000px;">
+              <table class="ag-table" style="width: 100%">
+                <thead class="p-datatable-thead">
+                  <tr>
+                    <th style="width:50px">STT</th>
+                    <th *ngFor="let col of cols" [style.width]="col.width">
+                      {{col.header}}
+                    </th>
+                    <th style="width:70px; padding: 1px"> {{'LIST.SELECT' | translate}} </th>
+                  </tr>
+                </thead>
+                <tbody class="p-datatable-tbody" *ngFor="let ctl of dataSource; let j = index">
+                  <tr style="background-color: lightskyblue">
+                    <td colspan="3" [class.align-center]="true">
+                      <span style="font-weight: bold;">{{ctl.title}}</span>
+                    </td>
+                    <td [class.align-center]="true" style="padding: 1px">
+                      <p-inputSwitch size="small" (onChange)="onChangeController(ctl, $event)"
+                        [(ngModel)]="ctl.checked"></p-inputSwitch>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let per of ctl.azPermissionses; let k = index">
+                    <td style="width:50px">{{k + 1}}</td>
+                    <td>
+                      {{per.permissionName}}
+                    </td>
+                    <td style="font-weight: bold;">
+                      {{per.permissionIndex}}
+                    </td>
+                    <td [class.align-center]="true" style="padding: 1px">
+                      <p-inputSwitch size="small" (onChange)="onChangePermission(per, $event.checked)"
+                        [(ngModel)]="per.checked"></p-inputSwitch>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </p-scrollPanel>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
