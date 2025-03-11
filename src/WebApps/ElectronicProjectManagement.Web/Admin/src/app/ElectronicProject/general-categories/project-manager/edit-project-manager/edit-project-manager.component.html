@@ -1,0 +1,38 @@
+<p-dialog #dialog header="Chỉnh sửa đề tài đồ án" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '1200px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div>
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-12">
+          <label for="topic">Tên chủ đề <span style="color: red;">*</span></label>
+          <p-dropdown [options]="listTopic" [(ngModel)]="itemDetail.topic" formControlName="topic" appendTo="body">
+          </p-dropdown>
+        </div>
+        <div class="field col-12 md:col-12">
+          <label for="name">Tên đề tài<span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.name" autocomplete="off"
+            formControlName="name">
+        </div>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+      </div>
+      <div class="col-4 md:col-4 fr">
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CLOSE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="saveAndClose()"></button>
+<!-- 
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CONTINUE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="save()"></button> -->
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

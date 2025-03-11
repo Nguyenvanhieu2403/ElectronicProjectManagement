@@ -1,0 +1,30 @@
+<p-dialog #dialog header="Import đề tài đồ án" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{ width: '900px' }" closeIcon="ci ci-close">
+  <div class="import-container" style="display: flex; justify-content: space-between;">
+    <div>
+      <label for="fileUpload" class="file-label">File import</label>
+      <small class="file-types"> (Loại file *.xls, *.xlsx, *.xlsm) </small>
+    </div>
+    <div class="uploaded-file" *ngIf="uploadedFile">
+      <a [href]="fileDownloadUrl" download="{{ uploadedFile.name }}" class="file-link">
+        <i>{{ uploadedFile.name }}</i>
+      </a>
+      <button type="button" (click)="removeFile(fileInput)" class="delete-btn">Xóa</button>
+    </div>
+    <div>
+      <p-fileUpload #fileInput mode="basic" name="invoiceFile" chooseIcon="pi pi-upload" chooseLabel="Tải file"
+        [maxFileSize]="5242880" (onSelect)="onFileSelect($event)" [auto]="true">
+      </p-fileUpload>
+      <!-- <p-fileUpload name="file" mode="basic" (onUpload)="onUpload()" chooseIcon="pi pi-upload" chooseLabel="Tải file"
+        accept=".xls,.xlsx,.xlsm" customUpload="true" /> -->
+      <!-- <p-fileUpload #fileInput mode="basic" name="invoiceFile" chooseIcon="pi pi-upload" chooseLabel="Tải file" [maxFileSize]="5242880" 
+      accept=".xlsx,.xls" (onSelect)="onUpload($event)" [auto]="true">
+    </p-fileUpload> -->
+    </div>
+  </div>
+  <div class="footer-buttons">
+    <button pButton label="Tải template import" class="p-button-info" (click)="downloadTemplate()" style="margin-right: 15px;"></button>
+    <button pButton label="Import" class="p-button-success" (click)="onUpload()" style="margin-right: 15px;"></button>
+    <button pButton label="Đóng" class="p-button-secondary" (click)="isShow = false"></button>
+  </div>
+</p-dialog>

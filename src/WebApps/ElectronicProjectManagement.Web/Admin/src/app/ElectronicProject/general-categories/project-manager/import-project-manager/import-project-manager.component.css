@@ -1,0 +1,38 @@
+.import-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.file-label {
+    font-weight: bold;
+}
+
+.file-types {
+    font-size: 12px;
+    color: gray;
+}
+
+.footer-buttons {
+    display: flex;
+    justify-content: end;
+    margin-top: 16px;
+    margin-right: 20px;
+}
+
+.file-link {
+    color: blue;
+    font-style: italic;
+    text-decoration: none;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
+.delete-btn {
+    color: red;
+    background: none;
+    border: none;
+    cursor: pointer;
+}

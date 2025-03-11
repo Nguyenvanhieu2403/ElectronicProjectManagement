@@ -1,0 +1,65 @@
+<p-dialog #dialog header="Danh sách sinh viên đã đăng ký" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '1200px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="body" style="margin: 5px;">
+    <div class="data-view-main-action-area__right-block">
+      <div class="h-mb-8">
+        {{(pageIndex -1) * pageSize + 1}} - {{pageIndex * pageSize}} {{'LIST.OFF' | translate}}
+        {{totalRecord}}
+      </div>
+      <button pButton pRipple type="button" icon="pi pi-angle-left" (click)="onPrePage()" [disabled]="pageIndex == 1"
+        class="p-button-rounded p-button-text mr-2 mb-2"></button>
+      <button pButton pRipple type="button" icon="pi pi-angle-right" (click)="onNextPage()"
+        [disabled]="pageIndex > totalRecord / pageSize" class="p-button-rounded p-button-text mr-2 mb-2"></button>
+    </div>
+    <div class="table-wrapper setpading">
+      <p-table [columns]="cols" [value]="dataSource" [rows]="pageSize" [totalRecords]="totalRecord" [customSort]="true"
+      [scrollHeight]="'80vh'" [scrollable]="true"  (onPage)="onPage($event)"
+      [tableStyle]="{ 'min-width': setWidth, 'width': 'auto !important' }" [loading]="isLoading" [lazy]="true"
+      styleClass="p-datatable-gridlines">
+        <ng-template pTemplate="colgroup">
+          <colgroup>
+
+            <ng-container *ngFor="let col of cols">
+              <col [style.width]="col.width ? col.width : 'auto'" [hidden]="!col.visible" />
+            </ng-container>
+          </colgroup>
+        </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <th *ngIf="col.sort" [hidden]="!col.visible" [pSortableColumn]="col.field">
+                <div class="h-flex-el -h-space-between">
+                  <div class="h-overflow-break-word">{{ col.header }}</div>
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </div>
+              </th>
+
+              <th *ngIf="!col.sort" [hidden]="!col.visible">
+                <div class="h-overflow-break-word">{{ col.header }}</div>
+              </th>
+            </ng-container>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [class.ag-tr-status]="rowData.status" [class.ag-tr-status-danger]="rowData.status === 3"
+            [class.ag-tr-status-warning]="rowData.status === 2" [class.ag-tr-status-success]="rowData.status === 1">
+            <td *ngFor="let col of columns" [hidden]="!col.visible" [ngSwitch]="col.field">
+              <span *ngSwitchCase="'stt'">{{(pageIndex - 1) * pageSize + rowIndex + 1}}</span>
+              <span *ngSwitchCase="'unitName'">{{rowData.unitName + "(" + rowData.unitCode + ")"}}</span>
+              <!-- <span *ngSwitchCase="'action'">
+                <button pButton pRipple type="button" icon="ci ci-edit" class="p-button-rounded p-button-text"
+                  (click)="onEdit(rowData)" pTooltip="{{'BUTTON.EDIT' | translate }}"></button>
+                <button pButton pRipple type="button" icon="pi pi-trash" style="color: red"
+                  class="p-button-rounded p-button-text" (click)="onDelete(rowData)"
+                  pTooltip="Xoá"></button>
+              </span> -->
+              <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</p-dialog>
