@@ -11,6 +11,10 @@ namespace ElectronicProjectManagement.Repository.Configs
         {
             services.DepedencyInjectionDatacontext(configuration);
             services.AddScoped<IReferencesFileRepos, ReferencesFileRepos>();
+            services.AddScoped<ITopicRepos, TopicRepos>();
+            services.AddScoped<IProjectBatchRepos, ProjectBatchRepos>();
+            services.AddScoped<IProjectsTeachersStudentsRepos, ProjectsTeachersStudentsRepos>();
+            services.AddScoped<IProjectsRepos, ProjectsRepos>();
         }
     }
 }

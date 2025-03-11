@@ -50,6 +50,22 @@ import { ChartModule } from 'primeng/chart';
 import { ReferencesFileManagerComponent } from './ElectronicProject/references-file-manager/references-file-manager.component';
 import { AddReferencesFileManagerComponent } from './ElectronicProject/references-file-manager/add-references-file-manager/add-references-file-manager.component';
 import { EditReferencesFileManagerComponent } from './ElectronicProject/references-file-manager/edit-references-file-manager/edit-references-file-manager.component';
+import { TopicManagerComponent } from './ElectronicProject/general-categories/topic-manager/topic-manager.component';
+import { AddTopicManagerComponent } from './ElectronicProject/general-categories/topic-manager/add-topic-manager/add-topic-manager.component';
+import { EditTopicManagerComponent } from './ElectronicProject/general-categories/topic-manager/edit-topic-manager/edit-topic-manager.component';
+import { ProjectBatchComponent } from './ElectronicProject/general-categories/project-batch/project-batch.component';
+import { AddProjectBatchComponent } from './ElectronicProject/general-categories/project-batch/add-project-batch/add-project-batch.component';
+import { EditProjectBatchComponent } from './ElectronicProject/general-categories/project-batch/edit-project-batch/edit-project-batch.component';
+import { ViewProjectBatchComponent } from './ElectronicProject/general-categories/project-batch/view-project-batch/view-project-batch.component';
+import { RegisterForInstructorsComponent } from './ElectronicProject/register-for-instructors/register-for-instructors.component';
+import { ViewRegisterForInstructorsComponent } from './ElectronicProject/register-for-instructors/view-register-for-instructors/view-register-for-instructors.component';
+import { AddStudentRegisterProjectComponent } from './ElectronicProject/student-register-project/add-student-register-project/add-student-register-project.component';
+import { StudentRegisterProjectComponent } from './ElectronicProject/student-register-project/student-register-project.component';
+import { EditProjectManagerComponent } from './ElectronicProject/general-categories/project-manager/edit-project-manager/edit-project-manager.component';
+import { AddProjectManagerComponent } from './ElectronicProject/general-categories/project-manager/add-project-manager/add-project-manager.component';
+import { ProjectManagerComponent } from './ElectronicProject/general-categories/project-manager/project-manager.component';
+import { ImportProjectManagerComponent } from './ElectronicProject/general-categories/project-manager/import-project-manager/import-project-manager.component';
+import { TopicApprovalComponent } from './ElectronicProject/topic-approval/topic-approval.component';
 export function createTranslateLoader(http: HttpClient) {
   return new MultiTranslateHttpLoader(http);
 }
@@ -109,6 +125,22 @@ export function createTranslateLoader(http: HttpClient) {
     ReferencesFileManagerComponent,
     AddReferencesFileManagerComponent,
     EditReferencesFileManagerComponent,
+    TopicManagerComponent,
+    AddTopicManagerComponent,
+    EditTopicManagerComponent,
+    ProjectBatchComponent,
+    AddProjectBatchComponent,
+    EditProjectBatchComponent,
+    ViewProjectBatchComponent,
+    RegisterForInstructorsComponent,
+    ViewRegisterForInstructorsComponent,
+    StudentRegisterProjectComponent,
+    AddStudentRegisterProjectComponent,
+    ProjectManagerComponent,
+    AddProjectManagerComponent,
+    EditProjectManagerComponent,
+    ImportProjectManagerComponent,
+    TopicApprovalComponent,
   ],
   providers: [
     MenuService,

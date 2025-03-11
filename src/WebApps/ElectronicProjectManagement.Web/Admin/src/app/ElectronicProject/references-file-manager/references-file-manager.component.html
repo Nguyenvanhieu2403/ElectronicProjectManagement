@@ -20,17 +20,17 @@
           <input type="text" pInputText [(ngModel)]="keyword" autocomplete="off"
             formControlName="keyword">
         </div>
-        <div class="field col-12 md:col-1 " authorize="[{'crmbetaapi':'item/18'}]">
+        <div class="field col-12 md:col-1 " authorize="">
           <p-button [outlined]="true" (click)="search()"
           [style]="{'margin-top': '25px','max-width':'100%','max-height':'50%', 'text-align':'center'}"
           icon="pi pi-search" label="Lọc"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="[{'crmbetaapi':'item/18'}]">
+        <div class="field col-12 md:col-1" authorize="">
           <p-button [outlined]="true" (click)="onAdd()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-plus" label="Thêm mới"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="[{'crmbetaapi':'item/18'}]">
+        <div class="field col-12 md:col-1" authorize="">
           <p-button [outlined]="true" (click)="exportExcel()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-file-excel" label="Export Excel"></p-button>

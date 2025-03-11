@@ -3389,7 +3389,7 @@ body .p-overlay-badge .p-badge {
 
 .layout-menu-light .menu-wrapper .layout-menu-container .layout-menu li.active-menuitem>a {
   background-color: var(--primary-lightest-color);
-  color: var(--primary-menu-text-color);
+  color: #414aea;
 }
 
 .layout-menu-light .menu-wrapper .layout-menu-container .layout-menu li.active-menuitem>a>i {

@@ -1,62 +1,91 @@
 import { Component, Input } from '@angular/core';
-import { trigger, state, transition, style, animate } from '@angular/animations';
+import {
+  trigger,
+  state,
+  transition,
+  style,
+  animate,
+} from '@angular/animations';
 import { AppMainComponent } from './app.main.component';
 import { AppComponent } from '../../app.component';
-import { AuthenticationService, CoreUser, SignalRService, UserService } from 'vnpost-shared';
+import {
+  AuthenticationService,
+  CoreUser,
+  SignalRService,
+  UserService,
+} from 'vnpost-shared';
 
 @Component({
   selector: 'app-inline-menu',
   templateUrl: './app.inlinemenu.component.html',
   animations: [
     trigger('menu', [
-      state('hiddenAnimated', style({
-        height: '0px',
-        paddingBottom: '0px',
-        overflow: 'hidden'
-      })),
-      state('visibleAnimated', style({
-        height: '*',
-        overflow: 'visible'
-      })),
-      state('visible', style({
-        opacity: 1,
-        'z-index': 100
-      })),
-      state('hidden', style({
-        opacity: 0,
-        'z-index': '*'
-      })),
-      transition('visibleAnimated => hiddenAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
-      transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
+      state(
+        'hiddenAnimated',
+        style({
+          height: '0px',
+          paddingBottom: '0px',
+          overflow: 'hidden',
+        })
+      ),
+      state(
+        'visibleAnimated',
+        style({
+          height: '*',
+          overflow: 'visible',
+        })
+      ),
+      state(
+        'visible',
+        style({
+          opacity: 1,
+          'z-index': 100,
+        })
+      ),
+      state(
+        'hidden',
+        style({
+          opacity: 0,
+          'z-index': '*',
+        })
+      ),
+      transition(
+        'visibleAnimated => hiddenAnimated',
+        animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')
+      ),
+      transition(
+        'hiddenAnimated => visibleAnimated',
+        animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')
+      ),
       transition('visible => hidden', animate('.1s linear')),
-      transition('hidden => visible', [style({ transform: 'scaleY(0.8)' }), animate('.12s cubic-bezier(0, 0, 0.2, 1)')])
-    ])
-  ]
+      transition('hidden => visible', [
+        style({ transform: 'scaleY(0.8)' }),
+        animate('.12s cubic-bezier(0, 0, 0.2, 1)'),
+      ]),
+    ]),
+  ],
 })
 export class AppInlineMenuComponent {
-
-  @Input() key = "inline-menu";
+  @Input() key = 'inline-menu';
 
   @Input() style: any;
 
   @Input() styleClass: string;
 
   active: boolean;
-  currentUser = new CoreUser;
+  currentUser = new CoreUser();
 
   constructor(
     public appMain: AppMainComponent,
     public app: AppComponent,
     private _userService: UserService,
-    private _authenticationService: AuthenticationService,
-  ) {
-  }
+    private _authenticationService: AuthenticationService
+  ) {}
 
   ngOnInit() {
-    this._userService.getCurrentUser().then(rs => {
+    this._userService.getCurrentUser().then((rs) => {
       if (rs.displayName) {
         this.currentUser = rs;
-        localStorage.setItem('hub', this.currentUser.unitCode);
       }
     });
   }

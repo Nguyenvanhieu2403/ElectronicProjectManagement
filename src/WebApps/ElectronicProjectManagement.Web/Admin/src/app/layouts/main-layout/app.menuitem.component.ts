@@ -1,77 +1,164 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MenuService } from './app.menu.service';
 import { AppMainComponent } from './../main-layout/app.main.component';
+import { ConfirmationService } from 'primeng/api';
+import { AuthenticationService } from 'vnpost-shared';
 
 @Component({
   /* tslint:disable:component-selector */
   selector: '[app-menuitem]',
   /* tslint:enable:component-selector */
   template: `
-        <ng-container>
-            <div *ngIf="root" [authorize]="item.permissions">
-                <span class="layout-menuitem-text">{{item.label | translate}}</span>
-            </div>
-            <a [attr.href]="item.url" (click)="itemClick($event)" *ngIf="!item.routerLink || item.children" (keydown.enter)="itemClick($event)"
-               [attr.target]="item.target" [attr.tabindex]="0" [ngClass]="item.class" (mouseenter)="onMouseEnter()" pRipple
-               [pTooltip]="item.label | translate" [tooltipDisabled]="active || !(root && app.isSlim() && !app.isMobile())" [authorize]="item.permissions">
-                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-                <span class="layout-menuitem-text">{{item.label | translate}}</span>
-                <span class="p-badge p-component p-badge-no-gutter" [ngClass]="item.badgeClass" *ngIf="item.badge && !root">{{item.badge}}</span>
-                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.children && item.children.length > 0"></i>
-            </a>
-            <a (click)="itemClick($event)" *ngIf="item.routerLink && !item.children"
-               [routerLink]="item.routerLink" routerLinkActive="active-menuitem-routerlink" [routerLinkActiveOptions]="{exact: true}"
-               [attr.target]="item.target" [attr.tabindex]="0" [ngClass]="item.class" (mouseenter)="onMouseEnter()" pRipple
-               [pTooltip]="item.label | translate" [tooltipDisabled]="active || !(root && app.isSlim() && !app.isMobile())" [authorize]="item.permissions">
-                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-                <span class="layout-menuitem-text">{{item.label | translate}}</span>
-                <span class="p-badge p-component p-badge-no-gutter" [ngClass]="item.badgeClass" *ngIf="item.badge && !root">{{item.badge}}</span>
-                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.children && item.children.length > 0"></i>
-            </a>
-            <ul *ngIf="(item.children && root) || (item.children && active)" [@children]="root ? 'visible' : active ? 'visibleAnimated' : 'hiddenAnimated'">
-                <ng-template ngFor let-child let-i="index" [ngForOf]="item.children">
-                    <li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
-                </ng-template>
-            </ul>
-        </ng-container>
-    `,
+    <ng-container>
+      <div *ngIf="root" [authorize]="item.permissions">
+        <span class="layout-menuitem-text font-bold">{{
+          item.label | translate
+        }}</span>
+      </div>
+      <a
+        (click)="itemClick($event, item.url)"
+        *ngIf="!item.routerLink || item.children"
+        (keydown.enter)="itemClick($event, item.url)"
+        routerLinkActive="active-menuitem-routerlink"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [attr.target]="item.target"
+        [attr.tabindex]="0"
+        [ngClass]="item.class"
+        (mouseenter)="onMouseEnter()"
+        pRipple
+        [pTooltip]="item.label | translate"
+        [tooltipDisabled]="active || !(root && app.isSlim() && !app.isMobile())"
+        [authorize]="item.permissions"
+      >
+        <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+        <span class="layout-menuitem-text">{{ item.label | translate }}</span>
+        <span
+          class="p-badge p-component p-badge-no-gutter"
+          [ngClass]="item.badgeClass"
+          *ngIf="item.badge && !root"
+          >{{ item.badge }}</span
+        >
+        <i
+          class="pi pi-fw pi-angle-down layout-submenu-toggler"
+          *ngIf="item.children && item.children.length > 0"
+        ></i>
+      </a>
+      <a
+        (click)="itemClick($event, item.routerLink)"
+        *ngIf="item.routerLink && !item.children"
+        routerLinkActive="active-menuitem-routerlink"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [attr.target]="item.target"
+        [attr.tabindex]="0"
+        [ngClass]="item.class"
+        (mouseenter)="onMouseEnter()"
+        pRipple
+        [pTooltip]="item.label | translate"
+        [tooltipDisabled]="active || !(root && app.isSlim() && !app.isMobile())"
+        [authorize]="item.permissions"
+      >
+        <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+        <span class="layout-menuitem-text">{{ item.label | translate }}</span>
+        <span
+          class="p-badge p-component p-badge-no-gutter"
+          [ngClass]="item.badgeClass"
+          *ngIf="item.badge && !root"
+          >{{ item.badge }}</span
+        >
+        <i
+          class="pi pi-fw pi-angle-down layout-submenu-toggler"
+          *ngIf="item.children && item.children.length > 0"
+        ></i>
+      </a>
+      <ul
+        *ngIf="(item.children && root) || (item.children && active)"
+        [@children]="
+          root ? 'visible' : active ? 'visibleAnimated' : 'hiddenAnimated'
+        "
+      >
+        <ng-template ngFor let-child let-i="index" [ngForOf]="item.children">
+          <li
+            app-menuitem
+            [item]="child"
+            [index]="i"
+            [parentKey]="key"
+            [class]="child.badgeClass"
+          ></li>
+        </ng-template>
+      </ul>
+    </ng-container>
+  `,
   host: {
     '[class.layout-root-menuitem]': 'root || active',
-    '[class.active-menuitem]': '(active)'
+    '[class.active-menuitem]': '(active)',
   },
   animations: [
     trigger('children', [
-      state('void', style({
-        height: '0px',
-        padding: '0px'
-      })),
-      state('hiddenAnimated', style({
-        height: '0px',
-        padding: '0px'
-      })),
-      state('visibleAnimated', style({
-        height: '*'
-      })),
-      state('visible', style({
-        height: '*'
-      })),
-      state('hidden', style({
-        height: '0px',
-        padding: '0px'
-      })),
-      transition('visibleAnimated => hiddenAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
-      transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
-      transition('void => visibleAnimated, visibleAnimated => void',
-        animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
-    ])
-  ]
+      state(
+        'void',
+        style({
+          height: '0px',
+          padding: '0px',
+        })
+      ),
+      state(
+        'hiddenAnimated',
+        style({
+          height: '0px',
+          padding: '0px',
+        })
+      ),
+      state(
+        'visibleAnimated',
+        style({
+          height: '*',
+        })
+      ),
+      state(
+        'visible',
+        style({
+          height: '*',
+        })
+      ),
+      state(
+        'hidden',
+        style({
+          height: '0px',
+          padding: '0px',
+        })
+      ),
+      transition(
+        'visibleAnimated => hiddenAnimated',
+        animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')
+      ),
+      transition(
+        'hiddenAnimated => visibleAnimated',
+        animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')
+      ),
+      transition(
+        'void => visibleAnimated, visibleAnimated => void',
+        animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')
+      ),
+    ]),
+  ],
 })
 export class AppMenuitemComponent implements OnInit, OnDestroy {
-
   @Input() item: any;
 
   @Input() index: number;
@@ -88,90 +175,155 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
 
   key: string;
 
-  constructor(public app: AppMainComponent, public router: Router, private cd: ChangeDetectorRef, private menuService: MenuService) {
-    this.menuSourceSubscription = this.menuService.menuSource$.subscribe(key => {
-      // deactivate current active menu
-      if (this.active && this.key !== key && key.indexOf(this.key) !== 0) {
-        this.active = false;
-      }
-    });
+  sellerId: number = 0;
 
-    this.menuResetSubscription = this.menuService.resetSource$.subscribe(() => {
-      this.active = false;
-    });
-
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(params => {
-        if (this.app.isHorizontal() || this.app.isSlim()) {
+  constructor(
+    public app: AppMainComponent,
+    public router: Router,
+    private cd: ChangeDetectorRef,
+    private menuService: MenuService,
+    private confirmationService: ConfirmationService,
+    protected _authenticationService: AuthenticationService
+  ) {
+    this.menuSourceSubscription = this.menuService.menuSource$.subscribe(
+      (key) => {
+        // deactivate current active menu
+        if (this.active && this.key !== key && key.indexOf(this.key) !== 0) {
           this.active = false;
-        } else {
-          if (this.item.routerLink) {
-            this.updateActiveStateFromRoute();
-          } else {
-            this.active = false;
-          }
         }
-      });
+      }
+    );
+    const currentUser = this._authenticationService.getCurrentUser();
+
+    // this.menuResetSubscription = this.menuService.resetSource$.subscribe(() => {
+    //   this.active = false;
+    // });
+
+    // this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+    //   .subscribe(params => {
+    //     if (this.app.isHorizontal() || this.app.isSlim()) {
+    //       this.active = false;
+    //     } else {
+    //       if (this.item.routerLink) {
+    //         this.updateActiveStateFromRoute();
+    //       } else {
+    //         this.active = false;
+    //       }
+    //     }
+    //   });
   }
 
   ngOnInit() {
-    if (!(this.app.isHorizontal() || this.app.isSlim()) && this.item.routerLink) {
+    if (
+      !(this.app.isHorizontal() || this.app.isSlim()) &&
+      this.item.routerLink
+    ) {
       this.updateActiveStateFromRoute();
     }
 
-    this.key = this.parentKey ? this.parentKey + '-' + this.index : String(this.index);
+    this.key = this.parentKey
+      ? this.parentKey + '-' + this.index
+      : String(this.index);
   }
 
   updateActiveStateFromRoute() {
-    this.active = this.router.isActive(this.item.routerLink[0], this.item.items ? false : true);
+    this.active = this.router.isActive(
+      this.item.routerLink[0],
+      this.item.items ? false : true
+    );
   }
 
-  itemClick(event: Event) {
+  itemClick(event: Event, url: string) {
     // avoid processing disabled items
     if (this.item.disabled) {
       event.preventDefault();
       return;
     }
 
-    // navigate with hover in horizontal mode
-    if (this.root) {
-      this.app.menuHoverActive = !this.app.menuHoverActive;
-    }
+    if (this.item.code && this.item.code.includes('NeedActive.')) {
+      if (this.item.url) this.router.navigateByUrl(url);
 
-    // notify other items
-    this.menuService.onMenuStateChange(this.key);
+      // navigate with hover in horizontal mode
+      if (this.root) {
+        this.app.menuHoverActive = !this.app.menuHoverActive;
+      }
 
-    // execute command
-    if (this.item.command) {
-      this.item.command({ originalEvent: event, item: this.item });
-    }
+      // notify other items
+      this.menuService.onMenuStateChange(this.key);
 
-    // toggle active state
-    if (this.item.items) {
-      this.active = !this.active;
+      // execute command
+      if (this.item.command) {
+        this.item.command({ originalEvent: event, item: this.item });
+      }
+
+      // toggle active state
+      if (this.item.items) {
+        this.active = !this.active;
+      } else {
+        // activate item
+        this.active = true;
+
+        // reset horizontal and slim menu
+        if (this.app.isHorizontal() || this.app.isSlim()) {
+          this.menuService.reset();
+          this.app.menuHoverActive = false;
+        }
+
+        if (!this.app.isStatic()) {
+          this.app.menuActive = false;
+        }
+
+        this.app.mobileMenuActive = false;
+      }
+
+      this.removeActiveInk(event);
     } else {
-      // activate item
-      this.active = true;
+      if (this.item.url) this.router.navigateByUrl(url);
 
-      // reset horizontal and slim menu
-      if (this.app.isHorizontal() || this.app.isSlim()) {
-        this.menuService.reset();
-        this.app.menuHoverActive = false;
+      // navigate with hover in horizontal mode
+      if (this.root) {
+        this.app.menuHoverActive = !this.app.menuHoverActive;
       }
 
-      if (!this.app.isStatic()) {
-        this.app.menuActive = false;
+      // notify other items
+      this.menuService.onMenuStateChange(this.key);
+
+      // execute command
+      if (this.item.command) {
+        this.item.command({ originalEvent: event, item: this.item });
       }
 
-      this.app.mobileMenuActive = false;
+      // toggle active state
+      if (this.item.items) {
+        this.active = !this.active;
+      } else {
+        // activate item
+        this.active = true;
+
+        // reset horizontal and slim menu
+        if (this.app.isHorizontal() || this.app.isSlim()) {
+          this.menuService.reset();
+          this.app.menuHoverActive = false;
+        }
+
+        if (!this.app.isStatic()) {
+          this.app.menuActive = false;
+        }
+
+        this.app.mobileMenuActive = false;
+      }
+
+      this.removeActiveInk(event);
     }
-
-    this.removeActiveInk(event);
   }
 
   onMouseEnter() {
     // activate item on hover
-    if (this.root && (this.app.isHorizontal() || this.app.isSlim()) && this.app.isDesktop()) {
+    if (
+      this.root &&
+      (this.app.isHorizontal() || this.app.isSlim()) &&
+      this.app.isDesktop()
+    ) {
       if (this.app.menuHoverActive) {
         this.menuService.onMenuStateChange(this.key);
         this.active = true;
@@ -180,15 +332,20 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
   }
 
   removeActiveInk(event: Event) {
-    let currentTarget = (event.currentTarget as HTMLElement);
+    let currentTarget = event.currentTarget as HTMLElement;
     setTimeout(() => {
       if (currentTarget) {
         let activeInk = currentTarget.querySelector('.p-ink-active');
         if (activeInk) {
-          if (activeInk.classList)
-            activeInk.classList.remove('p-ink-active');
+          if (activeInk.classList) activeInk.classList.remove('p-ink-active');
           else
-            activeInk.className = activeInk.className.replace(new RegExp('(^|\\b)' + 'p-ink-active'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+            activeInk.className = activeInk.className.replace(
+              new RegExp(
+                '(^|\\b)' + 'p-ink-active'.split(' ').join('|') + '(\\b|$)',
+                'gi'
+              ),
+              ' '
+            );
         }
       }
     }, 401);
