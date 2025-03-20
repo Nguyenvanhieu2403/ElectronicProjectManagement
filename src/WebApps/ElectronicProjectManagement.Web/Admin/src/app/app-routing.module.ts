@@ -16,6 +16,8 @@ import { RegisterForInstructorsComponent } from './ElectronicProject/register-fo
 import { StudentRegisterProjectComponent } from './ElectronicProject/student-register-project/student-register-project.component';
 import { ProjectManagerComponent } from './ElectronicProject/general-categories/project-manager/project-manager.component';
 import { TopicApprovalComponent } from './ElectronicProject/topic-approval/topic-approval.component';
+import { PersonalProjectManagementComponent } from './ElectronicProject/personal-project-management/personal-project-management.component';
+import { ProjectApprovalComponent } from './ElectronicProject/project-approval/project-approval.component';
 
 export const routes: Routes = [
   {
@@ -56,6 +58,14 @@ export const routes: Routes = [
       {
         path: 'topic-approval',
         component: TopicApprovalComponent,
+      },
+      {
+        path: 'personal-project-management',
+        component: PersonalProjectManagementComponent,
+      },
+      {
+        path: 'project-approval',
+        component: ProjectApprovalComponent,
       },
     ],
   },

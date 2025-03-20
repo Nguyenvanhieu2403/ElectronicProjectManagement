@@ -1,0 +1,7 @@
+.formatted-content {
+    white-space: pre-line; /* Tự động xuống dòng theo dấu \n */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  

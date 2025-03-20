@@ -188,7 +188,7 @@ export class TopicManagerComponent
   onDelete(item: any) {
     if (item && item.id) {
       this._notifierService
-        .showConfirm('Bạn có chắc muốn xoá tài liệu tham khảo này không?')
+        .showConfirm('Bạn có chắc muốn xoá chủ đề này không?')
         .then((res) => {
           if (res) {
             this._service.deleteReferencesFile(item.id).then(

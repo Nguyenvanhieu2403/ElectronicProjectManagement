@@ -16,28 +16,29 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
 
-        [HttpGet("download/{folder}/{fileName}")]
-        public async Task<IActionResult> DownloadFile(string folder, string fileName)
+        [HttpGet("download")]
+        public async Task<IActionResult> DownloadFile([FromQuery] string filePath)
         {
             string baseDirData = _configuration.GetSection("File").GetValue<string>("ReferencesFileUrl")
                                  ?? "D:\\DoAnTotNghiep\\ElectronicProjectManagement\\src\\File";
 
-            string filePath = Path.Combine(baseDirData, folder, fileName);
-
-            if (!System.IO.File.Exists(filePath))
+            string fileUrl = Path.Combine(baseDirData, filePath);
+            if (!System.IO.File.Exists(fileUrl))
             {
                 return NotFound("File không tồn tại.");
             }
 
             var memory = new MemoryStream();
-            await using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            await using (var stream = new FileStream(fileUrl, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 await stream.CopyToAsync(memory);
             }
 
             memory.Position = 0;
             string contentType = "application/octet-stream";
-            return File(memory, contentType, fileName);
+            return File(memory, contentType, Path.GetFileName(fileUrl));
         }
+
+
     }
 }

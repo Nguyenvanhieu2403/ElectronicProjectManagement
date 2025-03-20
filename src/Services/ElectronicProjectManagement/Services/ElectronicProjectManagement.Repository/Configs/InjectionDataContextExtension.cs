@@ -15,6 +15,7 @@ namespace ElectronicProjectManagement.Repository.Configs
             services.AddScoped<IProjectBatchRepos, ProjectBatchRepos>();
             services.AddScoped<IProjectsTeachersStudentsRepos, ProjectsTeachersStudentsRepos>();
             services.AddScoped<IProjectsRepos, ProjectsRepos>();
+            services.AddScoped<IPersonalProjectManagementRepos, PersonalProjectManagementRepos>();
         }
     }
 }

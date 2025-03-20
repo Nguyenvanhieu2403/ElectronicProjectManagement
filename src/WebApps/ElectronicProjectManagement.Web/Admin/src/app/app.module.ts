@@ -47,6 +47,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { ReferencesFileManagerComponent } from './ElectronicProject/references-file-manager/references-file-manager.component';
 import { AddReferencesFileManagerComponent } from './ElectronicProject/references-file-manager/add-references-file-manager/add-references-file-manager.component';
 import { EditReferencesFileManagerComponent } from './ElectronicProject/references-file-manager/edit-references-file-manager/edit-references-file-manager.component';
@@ -66,6 +67,10 @@ import { AddProjectManagerComponent } from './ElectronicProject/general-categori
 import { ProjectManagerComponent } from './ElectronicProject/general-categories/project-manager/project-manager.component';
 import { ImportProjectManagerComponent } from './ElectronicProject/general-categories/project-manager/import-project-manager/import-project-manager.component';
 import { TopicApprovalComponent } from './ElectronicProject/topic-approval/topic-approval.component';
+import { PersonalProjectManagementComponent } from './ElectronicProject/personal-project-management/personal-project-management.component';
+import { AddPersonalProjectManagementComponent } from './ElectronicProject/personal-project-management/add-personal-project-management/add-personal-project-management.component';
+import { ViewPersonalProjectManagementComponent } from './ElectronicProject/personal-project-management/view-personal-project-management/view-personal-project-management.component';
+import { ProjectApprovalComponent } from './ElectronicProject/project-approval/project-approval.component';
 export function createTranslateLoader(http: HttpClient) {
   return new MultiTranslateHttpLoader(http);
 }
@@ -107,6 +112,7 @@ export function createTranslateLoader(http: HttpClient) {
     InputTextareaModule,
     InputSwitchModule,
     ChartModule,
+    PdfViewerModule,
   ],
   declarations: [
     AppComponent,
@@ -141,6 +147,10 @@ export function createTranslateLoader(http: HttpClient) {
     EditProjectManagerComponent,
     ImportProjectManagerComponent,
     TopicApprovalComponent,
+    PersonalProjectManagementComponent,
+    AddPersonalProjectManagementComponent,
+    ViewPersonalProjectManagementComponent,
+    ProjectApprovalComponent,
   ],
   providers: [
     MenuService,

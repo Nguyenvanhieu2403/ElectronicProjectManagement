@@ -15,6 +15,8 @@ namespace ElectronicProjectManagement.DataContext.Configs
             DapperPlusManager.Entity<InstructorsByBatch>().Table("EPM.InstructorsByBatch");
             DapperPlusManager.Entity<ProjectsTeachersStudents>().Table("EPM.ProjectsTeachersStudents");
             DapperPlusManager.Entity<Projects>().Table("EPM.Projects");
+            DapperPlusManager.Entity<PersonalProjectManagement>().Table("EPM.PersonalProjectManagement");
+            DapperPlusManager.Entity<CheckPlagiarism>().Table("EPM.CheckPlagiarism");
         }
     }
 }

@@ -1,0 +1,118 @@
+<p-dialog #dialog header="Nộp đồ án tốt nghiệp" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '1200px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div>
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="nameProjectBatch">Tên đợt đồ án <span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.nameProjectBatch" autocomplete="off"
+            formControlName="nameProjectBatch" readonly="true">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="topicName">Tên chủ đề<span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.topicName" autocomplete="off"
+            formControlName="topicName" readonly="true">
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="projectName">Tên đề tài <span style="color: red;">*</span></label>
+          <input type="text" pInputText [(ngModel)]="itemDetail.projectName" autocomplete="off"
+            formControlName="projectName" readonly="true">
+        </div>
+        <div class="col-12 md:col-6">
+          <div class="file-upload-wrapper">
+            <label>File PDF <span style="color: red;">*</span></label>
+            <p-fileUpload
+              #fileInput1
+              mode="basic"
+              name="invoiceFile"
+              chooseIcon="pi pi-upload"
+              [maxFileSize]="10485760"
+              (onSelect)="onFileSelectPDF($event)" 
+              [auto]="true"
+              chooseLabel="Chọn file"
+              [accept]="'.pdf, .docx'">
+            </p-fileUpload>
+            <div class="uploaded-file" *ngIf="selectedFilePDF">
+              <a 
+              [href]="fileDownloadUrlPDF" 
+              download="{{ selectedFilePDF.name }}" 
+              class="file-link">
+                <i>{{ selectedFilePDF.name }}</i>
+              </a>
+              <button type="button" (click)="removeFilePDF(fileInput1)" class="delete-btn">Xóa</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-6">
+          <div class="file-upload-wrapper">
+            <label>File PowerPoint <span style="color: red;">*</span></label>
+            <p-fileUpload
+              #fileInput2
+              mode="basic"
+              name="invoiceFile"
+              chooseIcon="pi pi-upload"
+              [maxFileSize]="26214400"
+              (onSelect)="onFileSelectPPT($event)" 
+              [auto]="true"
+              chooseLabel="Chọn file"
+              [accept]="'.pdf,.ppt,.pptx'">
+            </p-fileUpload>
+            <div class="uploaded-file" *ngIf="selectedFilePPT">
+              <a 
+              [href]="fileDownloadUrlPPT" 
+              download="{{ selectedFilePPT.name }}" 
+              class="file-link">
+                <i>{{ selectedFilePPT.name }}</i>
+              </a>
+              <button type="button" (click)="removeFilePPT(fileInput2)" class="delete-btn">Xóa</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-6">
+          <div class="file-upload-wrapper">
+            <label>Source Code <span style="color: red;">*</span></label>
+            <p-fileUpload
+              #fileInput3
+              mode="basic"
+              name="invoiceFile"
+              chooseIcon="pi pi-upload"
+              [maxFileSize]="104857600"
+              (onSelect)="onFileSelectSource($event)" 
+              [auto]="true"
+              chooseLabel="Chọn file"
+              [accept]="'.zip,.rar,.7z,.tar,.gz'">
+            </p-fileUpload>
+            <div class="uploaded-file" *ngIf="selectedFileSource">
+              <a 
+              [href]="fileDownloadUrlSource" 
+              download="{{ selectedFileSource.name }}" 
+              class="file-link">
+                <i>{{ selectedFileSource.name }}</i>
+              </a>
+              <button type="button" (click)="removeFileSource(fileInput3)" class="delete-btn">Xóa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+      </div>
+      <div class="col-4 md:col-4 fr">
+        <button *ngIf="itemDetail.status != 1" pButton pRipple type="button" label="{{'BUTTON.SAVE_CLOSE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="saveAndClose()"></button>
+<!-- 
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CONTINUE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="save()"></button> -->
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

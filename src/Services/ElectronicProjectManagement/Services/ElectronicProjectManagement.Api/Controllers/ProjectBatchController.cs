@@ -115,5 +115,20 @@ namespace ElectronicProjectManagement.Api.Controllers
                 return ResponseResult(MethodResult.ResultWithError("Có lỗi xảy ra"));
             }
         }
+
+        [HttpGet("GetAllProjectBatch")]
+        public async Task<IActionResult> GetAllProjectBatch()
+        {
+            try
+            {
+                return ResponseResult(await _repos.GetsAllProjectBatch());
+            }
+            catch (Exception ex)
+            {
+                Exception e = ex;
+                _logger.LogError(e, $"ProjectBatchController.GetAllProjectBatch");
+                return ResponseResult(MethodResult.ResultWithError("Có lỗi xảy ra"));
+            }
+        }
     }
 }

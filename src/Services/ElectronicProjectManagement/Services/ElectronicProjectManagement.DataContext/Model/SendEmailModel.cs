@@ -13,5 +13,11 @@ namespace ElectronicProjectManagement.DataContext.Model
         public string? ProjectTitle { get; set; }
         public string? SupervisorName { get; set; }
         public string? SupervisorEmail { get; set; }
+        public string? CheckedFile { get; set; }
+        public string? ReferenceFile { get; set; }
+        public Double? PlagiarismRate { get; set; }
+        public string? ContentDuplicated { get; set; }
+        public long? TimeCheck { get; set; }
+        public string? Reason { get; set; }
     }
 }

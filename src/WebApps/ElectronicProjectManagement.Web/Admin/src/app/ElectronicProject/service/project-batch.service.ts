@@ -63,4 +63,12 @@ export class ProjectBatchService extends BaseService {
       .pipe(catchError((err) => this.handleError(err, this._injector)))
       .toPromise();
   }
+
+  getAllProjectsBatch(): Promise<any> {
+    const apiUrl = `${this.serviceUri}/GetAllProjectBatch`;
+    return this._http
+      .get<any>(apiUrl)
+      .pipe(catchError((err) => this.handleError(err, this._injector)))
+      .toPromise();
+  }
 }

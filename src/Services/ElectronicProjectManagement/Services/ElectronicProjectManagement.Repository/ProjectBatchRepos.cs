@@ -204,9 +204,19 @@ namespace ElectronicProjectManagement.Repository
             }
         }
 
-        public Task<MethodResult<List<ProjectBatch>>> GetsAllProjectBatch()
+        public async Task<MethodResult<List<ProjectBatch>>> GetsAllProjectBatch()
         {
-            throw new NotImplementedException();
+            try
+            {
+                using IDbConnection connection = GetOpenConnection();
+
+                var data = await connection.QueryAsync<ProjectBatch>("EPM.GetAllProjectBatch",  commandType: CommandType.StoredProcedure);
+                return MethodResult<List<ProjectBatch>>.ResultWithData(data.ToList(), "", 0);
+            }
+            catch (Exception ex)
+            {
+                return MethodResult<List<ProjectBatch>>.ResultWithError(ex.Message, 400);
+            }
         }
 
         public async Task<MethodResult<List<ProjectBatch>>> GetsProjectBatchBySearch(ProjectBatchSearchModel model)

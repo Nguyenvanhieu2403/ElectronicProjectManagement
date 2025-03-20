@@ -200,5 +200,160 @@ namespace ElectronicProjectManagement.Repository.Common
                 Console.WriteLine("Lỗi khi gửi email: " + ex.Message);
             }
         }
+
+        public static void SendPlagiarismCheckEmail(SendEmailModel model)
+        {
+            string fromEmail = "nguyenvanhieu2422003@gmail.com"; // Email của bạn
+            string fromPassword = "petd buab wytk bzjh"; // Mật khẩu email
+
+            string subject = "Thông Báo: Kết Quả Kiểm Tra Đạo Văn Đồ Án";
+
+            string body = $"""
+                Kính gửi {model.SupervisorName} và {model.StudentName},
+        
+                Chúng tôi xin thông báo rằng quá trình kiểm tra đạo văn cho đề tài "{model.ProjectTitle}" đã hoàn tất.
+        
+                - File cần kiểm tra: {model.CheckedFile}
+                - File đối chiếu: {model.ReferenceFile}
+                - Tỷ lệ đạo văn: {model.PlagiarismRate}%
+                - Thời gian so sánh: {model.TimeCheck} ms
+                - Các đoạn văn bản trùng lặp: "{model.ContentDuplicated}"
+        
+                Vui lòng xem xét kết quả và có phương án điều chỉnh nếu cần thiết. Nếu tỷ lệ đạo văn vượt quá mức cho phép, sinh viên cần chỉnh sửa lại nội dung để đảm bảo tính trung thực và tuân thủ quy định của nhà trường.
+        
+                Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với hội đồng để được hỗ trợ.
+        
+                Trân trọng,
+                Hội đồng xét duyệt đồ án
+                """;
+
+            try
+            {
+                using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587)) // Sử dụng SMTP của Gmail
+                {
+                    client.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    client.EnableSsl = true;
+
+                    MailMessage mailMessage = new MailMessage();
+                    mailMessage.From = new MailAddress(fromEmail);
+                    mailMessage.To.Add(model.SupervisorEmail);
+                    mailMessage.To.Add(model.StudentEmail);
+                    mailMessage.Subject = subject;
+                    mailMessage.Body = body;
+                    mailMessage.IsBodyHtml = false;
+
+                    client.Send(mailMessage);
+                    Console.WriteLine("Email kết quả kiểm tra đạo văn đã được gửi thành công!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi gửi email: " + ex.Message);
+            }
+        }
+
+        public static void SendProjectSubmissionEmail(SendEmailModel model)
+        {
+            string fromEmail = "nguyenvanhieu2422003@gmail.com"; // Email của bạn
+            string fromPassword = "petd buab wytk bzjh"; // Mật khẩu email
+
+            var submissionDate = DateTime.Now;
+
+            string subject = "Thông Báo: Xác Nhận Nộp Đồ Án Tốt Nghiệp";
+
+            string body = $"""
+                Kính gửi {model.SupervisorName} và {model.StudentName},
+        
+                Chúng tôi xin thông báo rằng sinh viên {model.StudentName} đã hoàn tất việc nộp đồ án tốt nghiệp với thông tin sau:
+        
+                - Đề tài: {model.ProjectTitle}
+                - Ngày nộp: {submissionDate:dd/MM/yyyy HH:mm:ss}
+        
+                Vui lòng kiểm tra và xác nhận. Nếu có bất kỳ yêu cầu bổ sung nào, xin hãy phản hồi sớm nhất có thể.
+        
+                Trân trọng,
+                Hội đồng xét duyệt đồ án
+                """;
+
+            try
+            {
+                using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587)) // Sử dụng SMTP của Gmail
+                {
+                    client.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    client.EnableSsl = true;
+
+                    MailMessage mailMessage = new MailMessage();
+                    mailMessage.From = new MailAddress(fromEmail);
+                    mailMessage.To.Add(model.SupervisorEmail);
+                    mailMessage.To.Add(model.StudentEmail);
+                    mailMessage.Subject = subject;
+                    mailMessage.Body = body;
+                    mailMessage.IsBodyHtml = false;
+
+                    client.Send(mailMessage);
+                    Console.WriteLine("Email xác nhận nộp đồ án đã được gửi thành công!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi gửi email: " + ex.Message);
+            }
+        }
+
+        public static void SendApprovalOrRejectionEmail(SendEmailModel model, Boolean isApproved)
+        {
+            string fromEmail = "nguyenvanhieu2422003@gmail.com"; // Email của bạn
+            string fromPassword = "petd buab wytk bzjh"; // Mật khẩu email
+
+            string subject = isApproved ? "Thông Báo: Đồ Án Đã Được Phê Duyệt" : "Thông Báo: Đồ Án Bị Từ Chối";
+
+            string body = isApproved ?
+                $"""
+                Kính gửi {model.SupervisorName} và {model.StudentName},
+            
+                Chúng tôi xin thông báo rằng đề tài "{model.ProjectTitle}" đã được PHÊ DUYỆT.
+            
+                Sinh viên có thể tiến hành thực hiện đồ án theo kế hoạch.
+            
+                Trân trọng,
+                Hội đồng xét duyệt đồ án
+                """ :
+                    $"""
+                Kính gửi {model.SupervisorName} và {model.StudentName},
+            
+                Chúng tôi xin thông báo rằng đề tài "{model.ProjectTitle}" đã bị TỪ CHỐI.
+            
+                Lý do từ chối: {model.Reason}
+            
+                Vui lòng điều chỉnh hoặc đề xuất đề tài mới và nộp lại để hội đồng xem xét.
+            
+                Trân trọng,
+                Hội đồng xét duyệt đồ án
+            """;
+
+            try
+            {
+                using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587)) // Sử dụng SMTP của Gmail
+                {
+                    client.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    client.EnableSsl = true;
+
+                    MailMessage mailMessage = new MailMessage();
+                    mailMessage.From = new MailAddress(fromEmail);
+                    mailMessage.To.Add(model.SupervisorEmail);
+                    mailMessage.To.Add(model.StudentEmail);
+                    mailMessage.Subject = subject;
+                    mailMessage.Body = body;
+                    mailMessage.IsBodyHtml = false;
+
+                    client.Send(mailMessage);
+                    Console.WriteLine("Email thông báo phê duyệt/từ chối đồ án đã được gửi thành công!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi gửi email: " + ex.Message);
+            }
+        }
     }
 }

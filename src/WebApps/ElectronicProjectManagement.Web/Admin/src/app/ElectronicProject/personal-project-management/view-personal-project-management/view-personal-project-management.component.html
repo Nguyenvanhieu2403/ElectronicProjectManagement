@@ -1,0 +1,38 @@
+<p-dialog #dialog header="Xem trước PDF" [(visible)]="isShow" [modal]="true"
+  [styleClass]="'ag-modal force-full-width'" [style]="{'width': '800px'}" closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize" minimizeIcon="ci ci-minimize" [maximizable]="true" [autoZIndex]="true">
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div>
+        <validation-summary #validationSummary [formElement]="formElement" [formGroup]="formGroup">
+        </validation-summary>
+      </div>
+
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <pdf-viewer
+          [src]="src"
+          [rotation]="0"
+          [original-size]="false"
+          [show-all]="true"
+          [fit-to-page]="true"
+          [zoom]="0.8"
+          [zoom-scale]="'page-width'"
+          [stick-to-page]="false"
+          [render-text]="false"
+          [external-link-target]="'blank'"
+          [autoresize]="true"
+          [show-borders]="false"
+          [style]="{ height: height + 'vh', width: '100%' }"
+        ></pdf-viewer>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left">
+      </div>
+      <div class="col-4 md:col-4 fr">
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

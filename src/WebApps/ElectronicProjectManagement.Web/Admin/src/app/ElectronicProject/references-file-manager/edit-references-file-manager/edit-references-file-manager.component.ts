@@ -1,5 +1,9 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms';
 import { SecondPageEditBase } from 'vnpost-shared';
 import { ConvertTimezoneService } from '../../service/convert-timezone.service';
 import { ReferencesFileManagerService } from '../../service/references-file-manager.service';
@@ -9,10 +13,12 @@ import { FileService } from '../../service/file.service';
 @Component({
   selector: 'app-edit-references-file-manager',
   templateUrl: './edit-references-file-manager.component.html',
-  styleUrls: ['./edit-references-file-manager.component.css']
+  styleUrls: ['./edit-references-file-manager.component.css'],
 })
-export class EditReferencesFileManagerComponent extends SecondPageEditBase implements OnInit {
-
+export class EditReferencesFileManagerComponent
+  extends SecondPageEditBase
+  implements OnInit
+{
   uploadedFile: File | null = null;
   fileDownloadUrl: string | null = null;
   selectedFile: File | null = null;
@@ -35,26 +41,28 @@ export class EditReferencesFileManagerComponent extends SecondPageEditBase imple
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   onShowPopup(Id: any) {
     this.validationSummary.resetErrorMessages();
     this.resetForm();
 
-    if(Id > 0) {
+    if (Id > 0) {
       this._service.getById(Id).then(
         (response) => {
           this.itemDetail = response.data;
-          this.itemDetail.yearPublication = new Date(this.itemDetail.yearPublication);
+          this.itemDetail.yearPublication = new Date(
+            this.itemDetail.yearPublication
+          );
           const filePath = this.itemDetail.path;
           const fileName = this.itemDetail.fileName;
 
           this._fileService.getFiles(filePath).subscribe({
             next: (blob) => {
-              if (blob.size > 5242880) { // 5MB
-                this._notifierService.showWarning("File tải xuống vượt quá 5MB. Vui lòng thử lại!");
-                return;
-              }
+              // if (blob.size > 5242880) { // 5MB
+              //   this._notifierService.showWarning("File tải xuống vượt quá 5MB. Vui lòng thử lại!");
+              //   return;
+              // }
 
               // Tạo đối tượng File
               const file = new File([blob], fileName, { type: blob.type });
@@ -63,24 +71,29 @@ export class EditReferencesFileManagerComponent extends SecondPageEditBase imple
               // Đọc file và tạo URL để tải xuống
               const fileReader = new FileReader();
               fileReader.onload = () => {
-                const downloadBlob = new Blob([fileReader.result as ArrayBuffer], { type: file.type });
+                const downloadBlob = new Blob(
+                  [fileReader.result as ArrayBuffer],
+                  { type: file.type }
+                );
                 this.fileDownloadUrl = URL.createObjectURL(downloadBlob);
               };
               fileReader.readAsArrayBuffer(file);
             },
             error: (error) => {
-              console.error("Lỗi khi tải file:", error);
-              this._notifierService.showError("Không thể tải file. Vui lòng thử lại!");
-            }
+              console.error('Lỗi khi tải file:', error);
+              this._notifierService.showError(
+                'Không thể tải file. Vui lòng thử lại!'
+              );
+            },
           });
-
         },
         (error) => {
-          if (error?.error?.message) 
+          if (error?.error?.message)
             this._notifierService.showError(error?.error?.message);
-          else this._notifierService.showWarning(
-            this._translateService.instant('MESSAGE.NOT_FOUND_ERROR')
-          );
+          else
+            this._notifierService.showWarning(
+              this._translateService.instant('MESSAGE.NOT_FOUND_ERROR')
+            );
         }
       );
     }
@@ -103,14 +116,16 @@ export class EditReferencesFileManagerComponent extends SecondPageEditBase imple
       return;
     }
 
-    this.itemDetail.yearPublication = this._timerService.formatFullDateDotNet(this.itemDetail.yearPublication);
+    this.itemDetail.yearPublication = this._timerService.formatFullDateDotNet(
+      this.itemDetail.yearPublication
+    );
 
     const model = this.itemDetail;
     delete model.createDate;
     delete model.createBy;
     delete model.modified;
     delete model.modifiedBy;
-    
+
     this._service.updateReferencesFile(model, this.selectedFile).then(
       (response) => {
         this.closePopupMethod(true);
@@ -123,7 +138,7 @@ export class EditReferencesFileManagerComponent extends SecondPageEditBase imple
         if (error.error.message)
           this._notifierService.showError(error.error.message);
         else this._notifierService.showError('Có lỗi xảy ra khi chỉnh sửa');
-      },
+      }
     );
   }
 
@@ -139,7 +154,9 @@ export class EditReferencesFileManagerComponent extends SecondPageEditBase imple
       // Tạo URL blob để tải xuống
       const fileReader = new FileReader();
       fileReader.onload = () => {
-        const blob = new Blob([fileReader.result as ArrayBuffer], { type: this.selectedFile.type });
+        const blob = new Blob([fileReader.result as ArrayBuffer], {
+          type: this.selectedFile.type,
+        });
         this.fileDownloadUrl = URL.createObjectURL(blob);
       };
       fileReader.readAsArrayBuffer(this.selectedFile);
@@ -152,5 +169,4 @@ export class EditReferencesFileManagerComponent extends SecondPageEditBase imple
     this.fileDownloadUrl = null;
     fileInput.clear();
   }
-
 }
