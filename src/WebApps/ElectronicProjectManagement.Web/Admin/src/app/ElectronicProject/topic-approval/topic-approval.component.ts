@@ -7,7 +7,8 @@ import { ViewRegisterForInstructorsComponent } from '../register-for-instructors
 import { FileService } from '../service/file.service';
 import { ProjectsTeachersStudentsService } from '../service/projects-teachers-students.service';
 import { ProjetcManagerService } from '../service/projetc-manager.service';
-
+import { finalize } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-topic-approval',
   templateUrl: './topic-approval.component.html',
@@ -129,7 +130,30 @@ export class TopicApprovalComponent
       .finally(() => (this.isLoading = false));
   }
 
-  exportExcel() {}
+  exportExcel() {
+    const model = {
+      keyword: this.keyword,
+      status: 1,
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      orderCol: this.orderCol,
+      isDesc: this.isDesc,
+      idTeacher: Number.parseInt(this.infor.userid),
+      totalRecord: 0,
+    };
+    const date = new Date();
+        const dateStr = `${date.getDate().toString().padStart(2, '0')}_${(
+          date.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, '0')}_${date.getFullYear()}`;
+        this.isLoading = true;
+        this._service.exportStudentsProposedTopics(model)
+        .pipe(finalize(() => (this.isLoading = false)))
+        .subscribe((blob) => {
+          saveAs(blob, `Danhsachdetaidexuat_${dateStr}.xlsx`);
+        });
+  }
 
   onSelectedVisible() {
     var dataWidth = 0;

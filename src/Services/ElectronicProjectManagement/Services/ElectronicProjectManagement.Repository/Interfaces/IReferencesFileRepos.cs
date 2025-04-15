@@ -15,6 +15,7 @@ namespace ElectronicProjectManagement.Repository.Interfaces
     {
         Task<MethodResult<List<ReferencesFile>>> GetsReferencesFileBySearch(ReferencesFileSearchModel model);
         Task<MethodResult<List<ReferencesFile>>> GetsAllReferencesFile();
+        Task<MemoryStream> ExportExcel(ReferencesFileSearchModel model);
         Task<MethodResult> CreateReferencesFile(ReferencesFileModel model, IFormFile file);
         Task<MethodResult> UpdateReferencesFile(ReferencesFileModel model, IFormFile file);
         Task<MethodResult> DeleteReferencesFile(long id);

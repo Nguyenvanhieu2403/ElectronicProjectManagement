@@ -25,7 +25,7 @@
           [style]="{'margin-top': '25px','max-width':'100%','max-height':'50%', 'text-align':'center'}"
           icon="pi pi-search" label="Lọc"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'projectsteachersstudents/16'}]">
           <p-button [outlined]="true" (click)="exportExcel()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-file-excel" label="Export Excel"></p-button>
@@ -106,7 +106,7 @@
                 <u (click)="onView(rowData)" style="cursor: pointer;color :deepskyblue"> {{rowData.countStudent}} </u>/15
               </span>
               <span *ngSwitchCase="'action'">
-                <button pButton pRipple type="button" icon="pi pi-check-square" style="color: green"
+                <button authorize="[{'epapi':'projectsteachersstudents/12'}]" *ngIf="rowData.countStudent < 15" pButton pRipple type="button" icon="pi pi-check-square" style="color: green"
                   class="p-button-rounded p-button-text" (click)="onRegister(rowData)"
                   pTooltip="Đăng ký"></button>
               </span>

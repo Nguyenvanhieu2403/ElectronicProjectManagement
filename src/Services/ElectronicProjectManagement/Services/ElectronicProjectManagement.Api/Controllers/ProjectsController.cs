@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using ElectronicProjectManagement.DataContext;
 using ElectronicProjectManagement.DataContext.Model;
+using ElectronicProjectManagement.Repository.Common;
 using ElectronicProjectManagement.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
+using VnPostLib.Common.Api.Attributes;
 using VnPostLib.Common.Api.Models;
 using VnPostLib.Common.Api.Services.Interfaces;
 using VnPostLib.Common.Base;
@@ -24,6 +27,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("GetsProjectsBySearch")]
+        [CheckPermission("Tìm kiếm đồ án", 11)]
         public async Task<IActionResult> GetsProjectsBySearch(SearchModel model)
         {
             try
@@ -39,6 +43,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("CreateProjects")]
+        [CheckPermission("Thêm mới đồ án", 12)]
         public async Task<IActionResult> CreateProjects(Projects model)
         {
             try
@@ -55,6 +60,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("UpdateProjects")]
+        [CheckPermission("Cập nhật đồ án", 13)]
         public async Task<IActionResult> UpdateProjects(Projects model)
         {
             try
@@ -71,6 +77,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("ImportProjects")]
+        [CheckPermission("Import danh sách đồ án", 14)]
         public async Task<IActionResult> ImportProjects(IFormFile file)
         {
             try
@@ -86,6 +93,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("ProposeProjects")]
+        [CheckPermission("Đề xuất đồ án", 15)]
         public async Task<IActionResult> ProposeProjects(Projects model)
         {
             try
@@ -102,6 +110,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("GetsStudentsProposedTopics")]
+        [CheckPermission("Tìm kiếm đồ án sinh viên đề xuất", 16)]
         public async Task<IActionResult> GetsStudentsProposedTopics(StudentsProposedTopicsSearchModel model)
         {
             try
@@ -117,6 +126,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("ApproveTopic")]
+        [CheckPermission("Phê duyệt đồ án đề xuất", 17)]
         public async Task<IActionResult> ApproveTopic(int ProjectId)
         {
             try
@@ -132,6 +142,7 @@ namespace ElectronicProjectManagement.Api.Controllers
         }
 
         [HttpPost("RejectTopic")]
+        [CheckPermission("Từ chối đồ án đề xuất", 18)]
         public async Task<IActionResult> RejectTopic(int ProjectId)
         {
             try
@@ -144,6 +155,32 @@ namespace ElectronicProjectManagement.Api.Controllers
                 _logger.LogError(e, $"ProjectsController.RejectTopic");
                 return ResponseResult(MethodResult.ResultWithError("Có lỗi xảy ra"));
             }
+        }
+
+        [HttpPost("ExportExcel")]
+        [CheckPermission("Xuất danh sách đồ án", 19)]
+        public async Task<ActionResult> ExportExcel(SearchModel model)
+        {
+            var toDay = DateTime.Today;
+
+            var result = await _repos.ExportExcel(model);
+            string templateFileURL = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "EPM_ProjectReport.xlsx");
+            string fileName = $"{ExtensionFile.GetFileNameWithoutExtension(templateFileURL)}_{toDay.ToString().Replace('/', '_').Replace(':', '_').Replace(' ', '_')}.xlsx";
+
+            Response.Headers.Add("fileName", fileName);
+            return File(result.ToArray(), ExtensionFile.GetContentType(templateFileURL), fileName);
+        }
+
+        [HttpPost("ExportStudentsProposedTopics")]
+        [CheckPermission("Xuất danh sách đồ án sinh viên đề xuất", 20)]
+        public async Task<ActionResult> ExportStudentsProposedTopics(StudentsProposedTopicsSearchModel model)
+        {
+            var toDay = DateTime.Today;
+            var result = await _repos.ExportStudentsProposedTopics(model);
+            string templateFileURL = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "EPM_GetsStudentsProposedTopicsReport.xlsx");
+            string fileName = $"{ExtensionFile.GetFileNameWithoutExtension(templateFileURL)}_{toDay.ToString().Replace('/', '_').Replace(':', '_').Replace(' ', '_')}.xlsx";
+            Response.Headers.Add("fileName", fileName);
+            return File(result.ToArray(), ExtensionFile.GetContentType(templateFileURL), fileName);
         }
     }
 }

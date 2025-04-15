@@ -66,4 +66,9 @@ export class ReferencesFileManagerService extends BaseService {
       .toPromise();
   }
 
+  exportExcel(model: any): Observable<Blob> {
+    const apiUrl = `${this.serviceUri}/ExportExcel`;
+    return this._http.post(apiUrl, model, { responseType: 'blob' });
+  }
+
 }

@@ -11,7 +11,8 @@ import { AddProjectBatchComponent } from './add-project-batch/add-project-batch.
 import { EditProjectBatchComponent } from './edit-project-batch/edit-project-batch.component';
 import { ViewProjectBatchComponent } from './view-project-batch/view-project-batch.component';
 import { ProjectBatchService } from '../../service/project-batch.service';
-
+import { finalize } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-project-batch',
   templateUrl: './project-batch.component.html',
@@ -149,7 +150,32 @@ export class ProjectBatchComponent
       .finally(() => (this.isLoading = false));
   }
 
-  exportExcel() {}
+  exportExcel() {
+    const model = {
+      keyword: this.keyword,
+      begindate: null,
+      enddate: null,
+      status: 1,
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      orderCol: this.orderCol,
+      isDesc: this.isDesc,
+      totalRecord: 0,
+    };
+    const date = new Date();
+    const dateStr = `${date.getDate().toString().padStart(2, '0')}_${(
+      date.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}_${date.getFullYear()}`;
+    this.isLoading = true;
+    this._service
+      .exportExcel(model)
+      .pipe(finalize(() => (this.isLoading = false)))
+          .subscribe((blob) => {
+            saveAs(blob, `Dotdoan_${dateStr}.xlsx`);
+          });
+  }
 
   downloadFile(item: any) {
     if (!item) return;

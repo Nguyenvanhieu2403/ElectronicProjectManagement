@@ -1,6 +1,7 @@
 ﻿using ElectronicProjectManagement.DataContext.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VnPostLib.Common.Api.Attributes;
 
 namespace ElectronicProjectManagement.Api.Controllers
 {
@@ -17,6 +18,7 @@ namespace ElectronicProjectManagement.Api.Controllers
 
 
         [HttpGet("download")]
+        [CheckPermission("Tải tài liệu tham khảo", 11)]
         public async Task<IActionResult> DownloadFile([FromQuery] string filePath)
         {
             string baseDirData = _configuration.GetSection("File").GetValue<string>("ReferencesFileUrl")

@@ -1,0 +1,31 @@
+<div class="chatbot-container" [class.open]="isOpen">
+  <div class="chat-icon" (click)="toggleChat()" *ngIf="!isOpen">
+    <img src="../../assets/images/chat-icon.png" alt="Chat">
+  </div>
+  
+  <div class="chat-window" *ngIf="isOpen">
+    <div class="chat-header">
+      <img src="assets/layout/images/logo_eaut.png" alt="Logo" class="chat-icon" />
+      <h5>Chat với AI EAUT!</h5>
+      <p-button icon="pi pi-times" [rounded]="true" [text]="true" style="color: #fff;" [outlined]="true" (click)="toggleChat()" />
+    </div>
+    <div class="messages">
+      <div *ngFor="let message of messages" class="message-container" [ngClass]="message.sender">
+        <div class="message-bubble">
+          <strong>{{ message.sender }}:</strong> {{ message.text }}
+        </div>
+      </div>
+    
+      <!-- Hiển thị "EAUT Bot đang nhập..." khi đang call API -->
+      <div *ngIf="isTyping" class="message-container bot">
+        <div class="message-bubble typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" pInputText [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Viết gì đó..." />
+      <p-button style="background-color: #007bff;" label="Gửi" (click)="sendMessage()" />
+    </div>
+  </div>
+</div>

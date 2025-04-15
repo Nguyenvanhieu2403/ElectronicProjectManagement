@@ -15,6 +15,7 @@ namespace ElectronicProjectManagement.Repository.Interfaces
     public interface IProjectsRepos : IBaseRepos<Projects>
     {
         Task<MethodResult<List<Projects>>> GetsProjectsBySearch(SearchModel model);
+        Task<MemoryStream> ExportExcel(SearchModel model);
         Task<MethodResult<List<Projects>>> GetsAllProjects();
         Task<MethodResult> CreateProjects(Projects model);
         Task<MethodResult> ProposeProjects(Projects model);
@@ -23,6 +24,7 @@ namespace ElectronicProjectManagement.Repository.Interfaces
         Task<MethodResult> ImportProjects(IFormFile file);
 
         Task<MethodResult<List<ProjectsProposedTopics>>> GetsStudentsProposedTopics(StudentsProposedTopicsSearchModel model);
+        Task<MemoryStream> ExportStudentsProposedTopics(StudentsProposedTopicsSearchModel model);
         Task<MethodResult> ApproveTopic(int ProjectId);
         Task<MethodResult> RejectTopic(int ProjectId);
     }

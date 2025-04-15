@@ -20,17 +20,17 @@
           <input type="text" pInputText [(ngModel)]="keyword" autocomplete="off"
             formControlName="keyword">
         </div>
-        <div class="field col-12 md:col-1 " authorize="">
-          <p-button [outlined]="true" (click)="search()"
+        <div class="field col-12 md:col-1 " authorize="[{'epapi':'referencesfile/12'}]">
+          <p-button [outlined]="true" (click)="search()" 
           [style]="{'margin-top': '25px','max-width':'100%','max-height':'50%', 'text-align':'center'}"
           icon="pi pi-search" label="Lọc"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'referencesfile/13'}]">
           <p-button [outlined]="true" (click)="onAdd()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-plus" label="Thêm mới"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'referencesfile/16'}]">
           <p-button [outlined]="true" (click)="exportExcel()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-file-excel" label="Export Excel"></p-button>
@@ -111,9 +111,9 @@
                 <u (click)="downloadFile(rowData)" style="cursor: pointer;color :deepskyblue"> {{rowData.fileName}} </u>
               </span>
               <span *ngSwitchCase="'action'">
-                <button pButton pRipple type="button" icon="ci ci-edit" class="p-button-rounded p-button-text"
+                <button pButton pRipple type="button" icon="ci ci-edit" class="p-button-rounded p-button-text" authorize="[{'epapi':'referencesfile/14'}]"
                   (click)="onEdit(rowData)" pTooltip="{{'BUTTON.EDIT' | translate }}"></button>
-                <button pButton pRipple type="button" icon="pi pi-trash" style="color: red"
+                <button pButton pRipple type="button" icon="pi pi-trash" style="color: red" authorize="[{'epapi':'referencesfile/15'}]"
                   class="p-button-rounded p-button-text" (click)="onDelete(rowData)"
                   pTooltip="Xoá"></button>
               </span>

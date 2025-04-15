@@ -15,9 +15,11 @@ namespace ElectronicProjectManagement.Repository.Interfaces
     {
         Task<MethodResult<List<PersonalProjectManagement>>> GetsPersonalProjectManagementBySearch(PersonalProjectManagementSearchModel model);
         Task<MethodResult<List<PersonalProjectManagement>>> GetsPersonalProjectManagementApprovalBySearch(PersonalProjectManagementSearchModel model);
+        Task<MemoryStream> GetsPersonalProjectManagementApprovalExportExcel(PersonalProjectManagementSearchModel model);
         Task<MethodResult<PersonalProjectManagement>> GetsPersonalProjectManagementByStudentId(PersonalProjectManagementSearchModel model);
         Task<MethodResult> UploadProject(IFormFile PDF, IFormFile PPT, IFormFile Source, long? IdStudent, int IdProjectsTeachersStudents);
         Task<MethodResult> CheckPlagiarism(string FilePath, long? IdProjectsTeachersStudents);
         Task<MethodResult> ProjectApproval(int IdProjectsTeachersStudents, int Status, string? Reason);
+        Task<MemoryStream> DownloadReportCheckPlagiarism(long IdProjectsTeachersStudents, long Author);
     }
 }

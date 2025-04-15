@@ -18,6 +18,8 @@ import { ProjectManagerComponent } from './ElectronicProject/general-categories/
 import { TopicApprovalComponent } from './ElectronicProject/topic-approval/topic-approval.component';
 import { PersonalProjectManagementComponent } from './ElectronicProject/personal-project-management/personal-project-management.component';
 import { ProjectApprovalComponent } from './ElectronicProject/project-approval/project-approval.component';
+import { ThesisDefenceComponent } from './ElectronicProject/thesis-defence/thesis-defence.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +27,7 @@ export const routes: Routes = [
     path: '',
     component: AppMainComponent,
     children: [
+      { path: '', component: DashboardComponent },
       {
         path: 'client-template',
         loadChildren: () =>
@@ -66,6 +69,10 @@ export const routes: Routes = [
       {
         path: 'project-approval',
         component: ProjectApprovalComponent,
+      },
+      {
+        path: 'thesis-defence',
+        component: ThesisDefenceComponent,
       },
     ],
   },

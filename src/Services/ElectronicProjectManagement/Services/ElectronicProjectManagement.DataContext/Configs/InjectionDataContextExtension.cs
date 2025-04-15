@@ -17,6 +17,8 @@ namespace ElectronicProjectManagement.DataContext.Configs
             DapperPlusManager.Entity<Projects>().Table("EPM.Projects");
             DapperPlusManager.Entity<PersonalProjectManagement>().Table("EPM.PersonalProjectManagement");
             DapperPlusManager.Entity<CheckPlagiarism>().Table("EPM.CheckPlagiarism");
+            DapperPlusManager.Entity<ThesisDefence>().Table("EPM.ThesisDefence");
+            DapperPlusManager.Entity<ThesisDefenceDetail>().Table("EPM.ThesisDefenceDetail");
         }
     }
 }

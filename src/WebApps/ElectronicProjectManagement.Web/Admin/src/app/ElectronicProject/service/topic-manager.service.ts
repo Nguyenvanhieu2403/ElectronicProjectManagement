@@ -49,4 +49,9 @@ export class TopicManagerService extends BaseService {
       .pipe(catchError((err) => this.handleError(err, this._injector)))
       .toPromise();
   }
+
+  exportExcel(model: any): Observable<Blob> {
+    const apiUrl = `${this.serviceUri}/ExportExcel`;
+    return this._http.post(apiUrl, model, { responseType: 'blob' });
+  }
 }

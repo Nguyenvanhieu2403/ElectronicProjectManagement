@@ -1,0 +1,138 @@
+<p-dialog
+  #dialog
+  header="Chấm điểm và nhận xét"
+  [(visible)]="isShow"
+  [modal]="true"
+  [styleClass]="'ag-modal force-full-width'"
+  [style]="{ width: '1200px' }"
+  closeIcon="ci ci-close"
+  maximizeIcon="ci ci-maximize"
+  minimizeIcon="ci ci-minimize"
+  [maximizable]="true"
+  [autoZIndex]="true"
+>
+  <div class="col-12 md:col-12">
+    <form #formElement [formGroup]="formGroup">
+      <div>
+        <validation-summary
+          #validationSummary
+          [formElement]="formElement"
+          [formGroup]="formGroup"
+        >
+        </validation-summary>
+      </div>
+
+      <div class="col-12 md:col-12 p-fluid p-formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="nameThesisDefence">Tên đợt bảo vệ</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.nameThesisDefence"
+            autocomplete="off"
+            formControlName="nameThesisDefence"
+            readonly
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="projectBatchName">Tên đợt đồ án</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.projectBatchName"
+            autocomplete="off"
+            formControlName="projectBatchName"
+            readonly
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="topicName">Tên chủ đề</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.topicName"
+            autocomplete="off"
+            formControlName="topicName"
+            readonly
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="projectName">Tên đề tài</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.projectName"
+            autocomplete="off"
+            formControlName="projectName"
+            readonly
+          />
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="nameStudent">Tên sinh viên bảo vệ</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.nameStudent"
+            autocomplete="off"
+            formControlName="nameStudent"
+            readonly
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="nameSupervisor">Tên giảng viên hướng dẫn</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.nameSupervisor"
+            autocomplete="off"
+            formControlName="nameSupervisor"
+            readonly
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="point"
+            >Điểm thang 10 <span style="color: red">*</span></label
+          >
+          <input
+            type="number"
+            pInputText
+            [(ngModel)]="itemDetail.point"
+            autocomplete="off"
+            formControlName="point"
+          />
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="comment">Nhận xét </label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="itemDetail.comment"
+            autocomplete="off"
+            formControlName="comment"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  <p-footer>
+    <div class="col-12 md:col-12">
+      <div class="col-8 md:col-8 fl h-text-left"></div>
+      <div class="col-4 md:col-4 fr">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="{{ 'BUTTON.SAVE_CLOSE' | translate }}"
+          icon="pi pi-save"
+          [disabled]="submitting"
+          class="p-button mr-2 mb-2"
+          (click)="saveAndClose()"
+        ></button>
+        <!-- 
+        <button pButton pRipple type="button" label="{{'BUTTON.SAVE_CONTINUE' | translate}}" icon="pi pi-save"
+          [disabled]="submitting" class="p-button mr-2 mb-2" (click)="save()"></button> -->
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

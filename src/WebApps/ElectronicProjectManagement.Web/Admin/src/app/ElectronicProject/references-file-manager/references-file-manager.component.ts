@@ -152,7 +152,27 @@ export class ReferencesFileManagerComponent extends SecondPageIndexBase implemen
   }
 
   exportExcel() {
-    
+    const model = {
+      keyword: this.keyword,
+      status: 1,
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      orderCol: this.orderCol,
+      isDesc: this.isDesc,
+      totalRecord: 0
+    };
+    const date = new Date();
+    const dateStr = `${date.getDate().toString().padStart(2, '0')}_${(
+      date.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}_${date.getFullYear()}`;
+    this.isLoading = true;
+    this._service.exportExcel(model)
+    .pipe(finalize(() => (this.isLoading = false)))
+    .subscribe((blob) => {
+      saveAs(blob, `TaiLieuThamKhao_${dateStr}.xlsx`);
+    });
   }
 
   downloadFile(item: any) {
@@ -163,11 +183,6 @@ export class ReferencesFileManagerComponent extends SecondPageIndexBase implemen
     
     this._fileService.getFiles(filePath).subscribe({
         next: (blob) => {
-            if (blob.size > 5242880) { // 5MB
-                this._notifierService.showWarning("File tải xuống vượt quá 5MB. Vui lòng thử lại!");
-                return;
-            }
-
             // Tạo đối tượng File
             const file = new File([blob], fileName, { type: blob.type });
 

@@ -1,0 +1,109 @@
+<div class="grid">
+  <div class="col-12 md:col-6 lg:col-3" authorize="[{'epapi':'dashboard/11'}]" >
+    <div class="card h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <span class="text-900 text-xl font-semibold">
+          <a routerLink="/report"
+            >Số lượng sinh viên chưa đăng ký giảng viên hướng dẫn</a
+          >
+        </span>
+      </div>
+      <div> 
+        <div class="flex align-item-center justify-content-center" style="color: #5163E8; font-size: 1.4rem; align-items: center;">
+          <span class="mt-3 text-md font-medium" style="font-size: 2rem;" >{{notRegisteredInstructor ?? 0}}</span>
+          <span class="mt-3 ml-3 text-md font-medium">Sinh viên</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6 lg:col-3" authorize="[{'epapi':'dashboard/11'}]">
+    <div class="card h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <span class="text-900 text-xl font-semibold">
+          <a routerLink="/report-quality-province"
+            >Số lượng sinh viên đã đăng ký giảng viên hướng dẫn</a
+          >
+        </span>
+      </div>
+      <div>
+        <div class="flex align-item-center justify-content-center" style="color: #5163E8; font-size: 1.4rem; align-items: center;">
+          <span class="mt-3 text-md font-medium" style="font-size: 2rem;" >{{registeredInstructor ?? 0}}</span>
+          <span class="mt-3 ml-3 text-md font-medium">Sinh viên</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6 lg:col-3" authorize="[{'epapi':'dashboard/11'}]">
+    <div class="card h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <span class="text-900 text-xl font-semibold">
+          <a routerLink="/report-quality-khl">Số lượng đồ án đã được phê duyệt</a>
+        </span>
+      </div>
+      <div>
+        <div class="flex align-item-center justify-content-center" style="color: #5163E8; font-size: 1.4rem; align-items: center;">
+          <span class="mt-3 text-md font-medium" style="font-size: 2rem;" >{{approve ?? 0}}</span>
+          <span class="mt-3 ml-3 text-md font-medium">Sinh viên</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6 lg:col-3" authorize="[{'epapi':'dashboard/11'}]">
+    <div class="card h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <span class="text-900 text-xl font-semibold">
+          <a routerLink="/report-quality-pos"
+            >Số lượng đồ án chưa được phê duyệt</a
+          >
+        </span>
+      </div>
+      <div>
+        <div class="flex align-item-center justify-content-center" style="color: #5163E8; font-size: 1.4rem; align-items: center;">
+          <span class="mt-3 text-md font-medium" style="font-size: 2rem;" >{{notYetApprove ?? 0}}</span>
+          <span class="mt-3 ml-3 text-md font-medium">Sinh viên</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6 lg:col-8" authorize="[{'epapi':'dashboard/12'}]">
+    <div class="card h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <span class="text-900 text-xl font-semibold">
+          <a routerLink="/report-quality-pos">Thống kê đồ án theo chủ đề</a>
+        </span>
+      </div>
+      <div>
+        <div class="border-round">
+          <p-chart type="bar" [data]="basicData" [options]="basicOptions" />
+        </div>
+        <div class="flex align-item-center justify-content-between">
+          <span class="text-900 mt-3 text-md font-medium"> </span
+          ><span class="text-900 mt-3 text-md font-medium"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6 lg:col-4" authorize="[{'epapi':'dashboard/13'}]">
+    <div class="card h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <span class="text-900 text-xl font-semibold">
+          <a routerLink="/report-quality-pos">Thống kê điểm đồ án trong năm {{currentYear}}</a>
+        </span>
+      </div>
+      <div>
+        <div class="border-round">
+          <p-chart type="pie" [data]="data" [options]="options" />
+        </div>
+        <div class="flex align-item-center justify-content-between">
+          <span class="text-900 mt-3 text-md font-medium"> </span
+          ><span class="text-900 mt-3 text-md font-medium"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

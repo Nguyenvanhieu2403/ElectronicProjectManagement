@@ -355,5 +355,69 @@ namespace ElectronicProjectManagement.Repository.Common
                 Console.WriteLine("Lỗi khi gửi email: " + ex.Message);
             }
         }
+
+        public static void SendDefenseNotification(SendEmailModel model)
+        {
+            string fromEmail = "nguyenvanhieu2422003@gmail.com"; // Email của bạn
+            string fromPassword = "petd buab wytk bzjh"; // Mật khẩu email
+
+            string subject = "Thông Báo: Lịch Bảo Vệ Đồ Án";
+
+            // Tạo danh sách giảng viên
+            string lecturerList = "";
+            foreach (var lecturer in model.Teachers)
+            {
+                lecturerList += $"- {lecturer.Name} ({lecturer.Email})\n";
+            }
+
+            // Nội dung email
+            string body = $"""
+            Kính gửi Hội đồng bảo vệ và sinh viên {model.StudentName},
+
+            Chúng tôi xin thông báo về lịch bảo vệ đồ án của sinh viên {model.StudentName} như sau:
+
+            🔹 **Đợt bảo vệ:** {model.ThesisDefenceName}
+            📅 **Thời gian:** {model.StartTime:dd/MM/yyyy HH:mm} - {model.EndTime:dd/MM/yyyy HH:mm}
+            🏫 **Phòng bảo vệ:** {model.Location}
+
+            🔹 **Hội đồng bảo vệ:**
+            {lecturerList}
+
+            Vui lòng có mặt đúng giờ để buổi bảo vệ diễn ra thuận lợi.
+
+            Trân trọng,  
+            Hội đồng bảo vệ đồ án
+            """;
+
+            try
+            {
+                using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587)) // SMTP của Gmail
+                {
+                    client.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    client.EnableSsl = true;
+
+                    MailMessage mailMessage = new MailMessage();
+                    mailMessage.From = new MailAddress(fromEmail);
+                    mailMessage.To.Add(model.StudentEmail);
+
+                    // Gửi cho từng giảng viên
+                    foreach (var lecturer in model.Teachers)
+                    {
+                        mailMessage.To.Add(lecturer.Email);
+                    }
+
+                    mailMessage.Subject = subject;
+                    mailMessage.Body = body;
+                    mailMessage.IsBodyHtml = false;
+
+                    client.Send(mailMessage);
+                    Console.WriteLine("Email thông báo lịch bảo vệ đồ án đã được gửi thành công!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi gửi email: " + ex.Message);
+            }
+        }
     }
 }

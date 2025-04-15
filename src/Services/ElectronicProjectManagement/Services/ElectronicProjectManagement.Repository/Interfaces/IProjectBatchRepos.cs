@@ -13,6 +13,7 @@ namespace ElectronicProjectManagement.Repository.Interfaces
     public interface IProjectBatchRepos : IBaseRepos<ProjectBatch>
     {
         Task<MethodResult<List<ProjectBatch>>> GetsProjectBatchBySearch(ProjectBatchSearchModel model);
+        Task<MemoryStream> ExportExcel(ProjectBatchSearchModel model);
         Task<MethodResult<ProjectBatchModel>> GetProjectBatchById(long id);
         Task<MethodResult<List<ProjectBatch>>> GetsAllProjectBatch();
         Task<MethodResult> CreateProjectBatch(ProjectBatchModel model);

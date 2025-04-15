@@ -18,6 +18,9 @@ using OfficeOpenXml;
 using Aspose.Cells;
 using ElectronicProjectManagement.DataContext.Dtos;
 using ElectronicProjectManagement.Repository.Common;
+using Microsoft.Data.SqlClient;
+using VnPostLib.Common.Helpers;
+using System.Reflection;
 
 namespace ElectronicProjectManagement.Repository
 {
@@ -97,6 +100,72 @@ namespace ElectronicProjectManagement.Repository
         public Task<MethodResult> DeleteProjects(long id)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<DataTable> ExportExcelToDataTable(SearchModel model)
+        {
+            DataTable dataTable = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(NamingConventionHelpers.GetSqlConnectionString(_configuration)))
+            {
+                conn.Open();
+                using (SqlCommand command = new SqlCommand("EPM.GetProjectsExcel", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Keyword", (model.Keyword ?? ""));
+                    command.Parameters.AddWithValue("@isDesc", model.IsDesc);
+                    command.Parameters.AddWithValue("@orderCol", model.OrderCol);
+                    command.Parameters.AddWithValue("@status", model.Status);
+                    command.CommandTimeout = 420;
+                    using (SqlDataAdapter adapter1 = new SqlDataAdapter(command))
+                    {
+                        adapter1.Fill(dataTable);
+                    }
+                }
+                conn.Close();
+            }
+            return dataTable;
+        }
+
+        public async Task<MemoryStream> ExportExcel(SearchModel model)
+        {
+            var exportFile = new MemoryStream();
+
+            #region call list api
+            var result = await ExportExcelToDataTable(model);
+            #endregion
+
+            #region xuất excel từ template
+            // Đường dẫn tới file template
+            string templatePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "EPM_ProjectReport.xlsx"); ;
+
+            // Đọc file template
+            var fileInfo = new FileInfo(templatePath);
+            using (var package = new OfficeOpenXml.ExcelPackage(fileInfo))
+            {
+                // Lấy worksheet đầu tiên từ template
+                var worksheet = package.Workbook.Worksheets[0];
+                worksheet.Cells["A5"].LoadFromDataTable(result, false);
+
+                // Tự động điều chỉnh kích thước cột
+                //worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                var range = worksheet.Cells["A5:D" + (result.Rows.Count + 6).ToString()];
+                foreach (var cell in range)
+                {
+                    var border = cell.Style.Border;
+                    border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
+
+                package.SaveAs(exportFile);
+            }
+
+            exportFile.Position = 0;
+            return exportFile;
+            #endregion
         }
 
         public Task<MethodResult<List<Projects>>> GetsAllProjects()
@@ -336,6 +405,73 @@ namespace ElectronicProjectManagement.Repository
             {
                 return MethodResult.ResultWithError("error", ex.Message, 400);
             }
+        }
+
+        private async Task<DataTable> ExportExcelToDataTable(StudentsProposedTopicsSearchModel model)
+        {
+            DataTable dataTable = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(NamingConventionHelpers.GetSqlConnectionString(_configuration)))
+            {
+                conn.Open();
+                using (SqlCommand command = new SqlCommand("EPM.GetProjectsProposedTopicsExportExcel", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Keyword", (model.Keyword ?? ""));
+                    command.Parameters.AddWithValue("@isDesc", model.IsDesc);
+                    command.Parameters.AddWithValue("@orderCol", model.OrderCol);
+                    command.Parameters.AddWithValue("@status", model.Status);
+                    command.Parameters.AddWithValue("@IdTeacher", model.IdTeacher);
+                    command.CommandTimeout = 420;
+                    using (SqlDataAdapter adapter1 = new SqlDataAdapter(command))
+                    {
+                        adapter1.Fill(dataTable);
+                    }
+                }
+                conn.Close();
+            }
+            return dataTable;
+        }
+
+        public async Task<MemoryStream> ExportStudentsProposedTopics(StudentsProposedTopicsSearchModel model)
+        {
+            var exportFile = new MemoryStream();
+
+            #region call list api
+            var result = await ExportExcelToDataTable(model);
+            #endregion
+
+            #region xuất excel từ template
+            // Đường dẫn tới file template
+            string templatePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "EPM_GetsStudentsProposedTopicsReport.xlsx"); ;
+
+            // Đọc file template
+            var fileInfo = new FileInfo(templatePath);
+            using (var package = new OfficeOpenXml.ExcelPackage(fileInfo))
+            {
+                // Lấy worksheet đầu tiên từ template
+                var worksheet = package.Workbook.Worksheets[0];
+                worksheet.Cells["A5"].LoadFromDataTable(result, false);
+
+                // Tự động điều chỉnh kích thước cột
+                //worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                var range = worksheet.Cells["A5:F" + (result.Rows.Count + 6).ToString()];
+                foreach (var cell in range)
+                {
+                    var border = cell.Style.Border;
+                    border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
+
+                package.SaveAs(exportFile);
+            }
+
+            exportFile.Position = 0;
+            return exportFile;
+            #endregion
         }
     }
 }

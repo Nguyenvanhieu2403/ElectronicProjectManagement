@@ -25,17 +25,17 @@
           [style]="{'margin-top': '25px','max-width':'100%','max-height':'50%', 'text-align':'center'}"
           icon="pi pi-search" label="Lọc"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'projects/12'}]">
           <p-button [outlined]="true" (click)="onAdd()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-plus" label="Thêm mới"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'projects/14'}]">
           <p-button [outlined]="true" (click)="onImport()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-file-excel" label="Import Excel"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'projects/19'}]">
           <p-button [outlined]="true" (click)="exportExcel()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-file-excel" label="Export Excel"></p-button>
@@ -117,9 +117,9 @@
               </span>
               <span *ngSwitchCase="'action'">
                 <button pButton pRipple type="button" icon="ci ci-edit" class="p-button-rounded p-button-text"
-                  (click)="onEdit(rowData)" pTooltip="{{'BUTTON.EDIT' | translate }}"></button>
+                  (click)="onEdit(rowData)" pTooltip="{{'BUTTON.EDIT' | translate }}" authorize="[{'epapi':'projects/13'}]"></button>
                 <button pButton pRipple type="button" icon="pi pi-trash" style="color: red"
-                  class="p-button-rounded p-button-text" (click)="onDelete(rowData)"
+                  class="p-button-rounded p-button-text" (click)="onDelete(rowData)" authorize="[{'epapi':'projects/13'}]"
                   pTooltip="Xoá"></button>
               </span>
               <span *ngSwitchDefault>{{ rowData[col.field] }}</span>

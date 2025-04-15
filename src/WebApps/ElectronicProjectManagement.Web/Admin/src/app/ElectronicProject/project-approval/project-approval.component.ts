@@ -13,6 +13,8 @@ import { EditReferencesFileManagerComponent } from '../references-file-manager/e
 import { FileService } from '../service/file.service';
 import { PersonalProjectManagementService } from '../service/personal-project-management.service';
 import { ProjectBatchService } from '../service/project-batch.service';
+import { finalize } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-project-approval',
@@ -243,7 +245,31 @@ export class ProjectApprovalComponent
       .finally(() => (this.isLoading = false));
   }
 
-  exportExcel() {}
+  exportExcel() {
+    const model = {
+      keyword: this.keyword,
+      status: 1,
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      orderCol: this.orderCol,
+      isDesc: this.isDesc,
+      totalRecord: 0,
+      idProjectBatch: this.projectBatch,
+      idUser: this.infor.userid,
+    };
+    const date = new Date();
+    const dateStr = `${date.getDate().toString().padStart(2, '0')}_${(
+      date.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}_${date.getFullYear()}`;
+    this.isLoading = true;
+    this._service.getsPersonalProjectManagementApprovalExportExcel(model)
+    .pipe(finalize(() => (this.isLoading = false)))
+    .subscribe((blob) => {
+      saveAs(blob, `Danhsachdoancanpheduyet_${dateStr}.xlsx`);
+    });
+  }
 
   downloadFile(item: any, type: any) {
     if (!item) return;
@@ -302,6 +328,43 @@ export class ProjectApprovalComponent
           'Không thể tải file. Vui lòng thử lại!'
         );
       },
+    });
+  }
+
+  downloadFileHighestRatio(item: any) {
+    if (!item) return;
+    
+    const fileName = item.fileHighestRatio;
+    
+    this._fileService.getFiles("D:\\DoAnTotNghiep\\ElectronicProjectManagement\\src\\File\\ReferencesFile\\" +fileName).subscribe({
+        next: (blob) => {
+
+            // Tạo đối tượng File
+            const file = new File([blob], fileName, { type: blob.type });
+
+            // Đọc file và tạo URL để tải xuống
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                const downloadBlob = new Blob([fileReader.result as ArrayBuffer], { type: file.type });
+                const downloadUrl = URL.createObjectURL(downloadBlob);
+                
+                // Tạo thẻ <a> để tải file
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Giải phóng URL sau khi tải xong
+                URL.revokeObjectURL(downloadUrl);
+            };
+            fileReader.readAsArrayBuffer(file);
+        },
+        error: (error) => {
+            console.error("Lỗi khi tải file:", error);
+            this._notifierService.showError("Không thể tải file. Vui lòng thử lại!");
+        }
     });
   }
 
@@ -388,5 +451,20 @@ export class ProjectApprovalComponent
           }
         });
     }
+  }
+
+  downloadReportCheckPlagiarism(item: any) {
+    this._notifierService.showSuccess(`Bắt đầu kiểm tra đạo văn đề tài ${item.projectName}`);
+    if (!item) return;
+    this._service
+      .downloadReportCheckPlagiarism(item.idProjectsTeachersStudents)
+      .subscribe((blob) => {
+        const fileName = `ReportCheckPlagiarism_${item.projectName}.pdf`;
+        saveAs(blob, fileName);
+        this._notifierService.showSuccess(`Tải xuống thành công ${fileName}`);
+      }, (error) => {
+        console.error('Lỗi khi tải file:', error);
+        this._notifierService.showError('Không thể tải file. Vui lòng thử lại!');
+      });
   }
 }

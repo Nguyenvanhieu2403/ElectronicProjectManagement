@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { get } from 'http';
 import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -84,5 +85,15 @@ export class PersonalProjectManagementService extends BaseService {
       .post<any>(apiUrl, null)
       .pipe(catchError((err) => this.handleError(err, this._injector)))
       .toPromise();
+  }
+
+  getsPersonalProjectManagementApprovalExportExcel(model: any): Observable<Blob> {
+    const apiUrl = `${this.serviceUri}/GetsPersonalProjectManagementApprovalExportExcel`;
+    return this._http.post(apiUrl, model, { responseType: 'blob' });
+  }
+
+  downloadReportCheckPlagiarism(id: any) : Observable<Blob> {
+    const apiUrl = `${this.serviceUri}/DownloadReportCheckPlagiarism?IdProjectsTeachersStudents=${id}`;
+    return this._http.post(apiUrl, null, { responseType: 'blob' });
   }
 }

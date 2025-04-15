@@ -14,6 +14,7 @@ namespace ElectronicProjectManagement.Repository.Interfaces
     public interface ITopicRepos : IBaseRepos<Topic>
     {
         Task<MethodResult<List<Topic>>> GetsTopicBySearch(TopicSearchModel model);
+        Task<MemoryStream> ExportExcel(TopicSearchModel model);
         Task<MethodResult<List<Topic>>> GetsAllTopic();
         Task<MethodResult> CreateTopic(TopicModel model);
         Task<MethodResult> UpdateTopic(TopicModel model);

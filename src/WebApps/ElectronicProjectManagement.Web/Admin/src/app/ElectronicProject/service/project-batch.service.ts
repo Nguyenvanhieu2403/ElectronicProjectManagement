@@ -3,6 +3,7 @@ import { BaseService } from 'vnpost-shared';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -70,5 +71,10 @@ export class ProjectBatchService extends BaseService {
       .get<any>(apiUrl)
       .pipe(catchError((err) => this.handleError(err, this._injector)))
       .toPromise();
+  }
+
+  exportExcel(model: any): Observable<Blob> {
+    const apiUrl = `${this.serviceUri}/ExportExcel`;
+    return this._http.post(apiUrl, model, { responseType: 'blob' });
   }
 }

@@ -8,6 +8,8 @@ import { TopicManagerService } from '../service/topic-manager.service';
 import { ProjectsTeachersStudentsService } from '../service/projects-teachers-students.service';
 import { ViewProjectBatchComponent } from '../general-categories/project-batch/view-project-batch/view-project-batch.component';
 import { ViewRegisterForInstructorsComponent } from './view-register-for-instructors/view-register-for-instructors.component';
+import { finalize } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-register-for-instructors',
@@ -122,7 +124,29 @@ export class RegisterForInstructorsComponent
       .finally(() => (this.isLoading = false));
   }
 
-  exportExcel() {}
+  exportExcel() {
+    const model = {
+      keyword: this.keyword,
+      status: 1,
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      orderCol: this.orderCol,
+      isDesc: this.isDesc,
+      totalRecord: 0,
+    };
+    const date = new Date();
+        const dateStr = `${date.getDate().toString().padStart(2, '0')}_${(
+          date.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, '0')}_${date.getFullYear()}`;
+        this.isLoading = true;
+        this._service.projectsTeachersStudentsExportExcel(model)
+        .pipe(finalize(() => (this.isLoading = false)))
+        .subscribe((blob) => {
+          saveAs(blob, `Danhsachgiangvienhuongdan_${dateStr}.xlsx`);
+        });
+  }
 
   onSelectedVisible() {
     var dataWidth = 0;

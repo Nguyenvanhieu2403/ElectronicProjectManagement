@@ -19,5 +19,10 @@ namespace ElectronicProjectManagement.DataContext.Model
         public string? ContentDuplicated { get; set; }
         public long? TimeCheck { get; set; }
         public string? Reason { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public string? Location { get; set; }
+        public string? ThesisDefenceName { get; set; }
+        public List<(string Name, string Email)> Teachers { get; set; }
     }
 }

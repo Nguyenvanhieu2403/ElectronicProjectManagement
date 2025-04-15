@@ -11,6 +11,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using OpenXmLWordprocessing = DocumentFormat.OpenXml.Wordprocessing;
 using Aspose.Words;
+using System.Reflection.PortableExecutable;
+using PdfSharp.Pdf.IO;
+using GroupDocs.Viewer;
+using GroupDocs.Viewer.Options;
 
 namespace ElectronicProjectManagement.Repository.Common
 {
@@ -227,6 +231,20 @@ namespace ElectronicProjectManagement.Repository.Common
         {
             // Tính toán tỷ lệ tương đồng
             return (double)commonSentences.Count() / baseSentences.Count();
+        }
+
+        public static int GetPageCountAsync(string filepath)
+        {
+            //using (var pdf = PdfReader.Open(filepath, PdfDocumentOpenMode.ReadOnly))
+            //{
+            //    return pdf.PageCount;
+            //}
+            using (var viewer = new Viewer(filepath))
+            {
+                ViewInfoOptions viewInfoOptions = ViewInfoOptions.ForPngView();
+                var viewInfo = viewer.GetViewInfo(viewInfoOptions);
+                return viewInfo.Pages.Count;
+            }
         }
     }
 }

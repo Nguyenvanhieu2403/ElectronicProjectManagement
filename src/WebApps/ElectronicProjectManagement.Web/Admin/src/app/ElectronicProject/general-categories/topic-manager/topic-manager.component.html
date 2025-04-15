@@ -25,12 +25,12 @@
           [style]="{'margin-top': '25px','max-width':'100%','max-height':'50%', 'text-align':'center'}"
           icon="pi pi-search" label="Lọc"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'topic/12'}]">
           <p-button [outlined]="true" (click)="onAdd()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-plus" label="Thêm mới"></p-button>
         </div>
-        <div class="field col-12 md:col-1" authorize="">
+        <div class="field col-12 md:col-1" authorize="[{'epapi':'topic/14'}]">
           <p-button [outlined]="true" (click)="exportExcel()"
             [style]="{'margin-top': '25px','width':'100%','max-height':'50%', 'text-align':'center'}"
             icon="pi pi-file-excel" label="Export Excel"></p-button>
@@ -112,8 +112,8 @@
               </span>
               <span *ngSwitchCase="'action'">
                 <button pButton pRipple type="button" icon="ci ci-edit" class="p-button-rounded p-button-text"
-                  (click)="onEdit(rowData)" pTooltip="{{'BUTTON.EDIT' | translate }}"></button>
-                <button pButton pRipple type="button" icon="pi pi-trash" style="color: red"
+                  (click)="onEdit(rowData)" pTooltip="{{'BUTTON.EDIT' | translate }}" authorize="[{'epapi':'topic/13'}]"></button>
+                <button pButton pRipple type="button" icon="pi pi-trash" style="color: red" authorize="[{'epapi':'topic/13'}]"
                   class="p-button-rounded p-button-text" (click)="onDelete(rowData)"
                   pTooltip="Xoá"></button>
               </span>

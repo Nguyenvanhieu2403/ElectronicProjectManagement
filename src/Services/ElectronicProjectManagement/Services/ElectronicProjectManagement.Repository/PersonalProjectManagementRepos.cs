@@ -22,6 +22,12 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Pipelines.Sockets.Unofficial.Arenas;
 using Dapper.Contrib.Extensions;
+using Microsoft.Data.SqlClient;
+using VnPostLib.Common.Helpers;
+using System.Reflection;
+using Elasticsearch.Net;
+using Xceed.Words.NET;
+using ConvertApiDotNet;
 
 namespace ElectronicProjectManagement.Repository
 {
@@ -130,7 +136,7 @@ namespace ElectronicProjectManagement.Repository
                     TimeCheck = stopwatch.ElapsedMilliseconds
 
                 };
-                if((SimilarSentences[0].Item2 * 100) > 80)
+                if((SimilarSentences[0].Item2 * 100) > 30)
                 {
                     SendEmail.SendPlagiarismCheckEmail(sendEmailModel);
                 }
@@ -427,5 +433,167 @@ namespace ElectronicProjectManagement.Repository
                 return MethodResult.ResultWithError("error", ex.Message, 400);
             }
         }
+
+        private async Task<DataTable> ExportExcelToDataTable(PersonalProjectManagementSearchModel model)
+        {
+            DataTable dataTable = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(NamingConventionHelpers.GetSqlConnectionString(_configuration)))
+            {
+                conn.Open();
+                using (SqlCommand command = new SqlCommand("EPM.GetsPersonalProjectManagementApprovalExportExcel", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Keyword", (model.Keyword ?? ""));
+                    command.Parameters.AddWithValue("@isDesc", model.IsDesc);
+                    command.Parameters.AddWithValue("@orderCol", model.OrderCol);
+                    command.Parameters.AddWithValue("@status", model.Status);
+                    command.Parameters.AddWithValue("@IdProjectBatch", model.IdProjectBatch);
+                    command.Parameters.AddWithValue("@IdUser", model.IdUser);
+                    command.CommandTimeout = 420;
+                    using (SqlDataAdapter adapter1 = new SqlDataAdapter(command))
+                    {
+                        adapter1.Fill(dataTable);
+                    }
+                }
+                conn.Close();
+            }
+            return dataTable;
+        }
+
+        public async Task<MemoryStream> GetsPersonalProjectManagementApprovalExportExcel(PersonalProjectManagementSearchModel model)
+        {
+            var exportFile = new MemoryStream();
+
+            #region call list api
+            var result = await ExportExcelToDataTable(model);
+            #endregion
+
+            #region xuất excel từ template
+            // Đường dẫn tới file template
+            string templatePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "EPM_GetsPersonalProjectManagementApprovalReport.xlsx");
+
+            // Đọc file template
+            var fileInfo = new FileInfo(templatePath);
+            using (var package = new OfficeOpenXml.ExcelPackage(fileInfo))
+            {
+                // Lấy worksheet đầu tiên từ template
+                var worksheet = package.Workbook.Worksheets[0];
+                worksheet.Cells["A5"].LoadFromDataTable(result, false);
+
+                // Tự động điều chỉnh kích thước cột
+                //worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                var range = worksheet.Cells["A5:O" + (result.Rows.Count + 6).ToString()];
+                foreach (var cell in range)
+                {
+                    var border = cell.Style.Border;
+                    border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
+
+                package.SaveAs(exportFile);
+            }
+
+            exportFile.Position = 0;
+            return exportFile;
+            #endregion
+        }
+
+        public async Task<MemoryStream> DownloadReportCheckPlagiarism(long IdProjectsTeachersStudents, long Author)
+        {
+            try
+            {
+                var exportFile = new MemoryStream();
+                using IDbConnection connection = GetOpenConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("@IdProjectsTeachersStudents", IdProjectsTeachersStudents);
+                parameters.Add("@Author", Author);
+
+                var data = await connection.QueryFirstOrDefaultAsync<ReportCheckPlagiarism>("EPM.GetDownloadReportCheckPlagiarism", parameters, commandType: CommandType.StoredProcedure);
+
+                string baseDir = _configuration.GetSection("File").GetValue<string>("ReferencesFileUrl")
+                         ?? "D:\\DoAnTotNghiep\\ElectronicProjectManagement\\src\\File";
+                string imageDir = Path.Combine(baseDir, "ReferencesFile");
+
+                if (!Directory.Exists(imageDir))
+                {
+                    return null;
+                }
+                var files = Directory.GetFiles(imageDir).Select(Path.GetFileName).ToList();
+
+                var filePathsFromBase = Directory.GetFiles(imageDir).ToList();
+
+                string filePathsToCompare = Path.Combine(baseDir, data.PathPDF);
+                if (!System.IO.File.Exists(filePathsToCompare))
+                {
+                    return null;
+                }
+
+                var filePathsToCompares = new List<string> { filePathsToCompare };
+
+                var beginStart = DateTime.Now;
+
+                var comparisonTasks = new List<Task>();
+
+                List<(List<string>, double, string baseFilePath, string targetFilePath)> SimilarSentences = new List<(List<string>, double, string baseFilePath, string targetFilePath)>();
+                foreach (var targetFilePath in filePathsToCompares)
+                {
+                    foreach (var baseFilePath in filePathsFromBase)
+                    {
+                        comparisonTasks.Add(Plagiarism.CompareTwoFileAsync(baseFilePath, targetFilePath, SimilarSentences));
+                    }
+                }
+
+                await Task.WhenAll(comparisonTasks);
+
+                var endStart = DateTime.Now;
+
+                SimilarSentences = SimilarSentences.OrderByDescending(x => x.Item2).ToList();
+                string tempDocxPath = Path.Combine(Path.GetTempPath(), ExtensionFile.GetFileNameWithoutExtension(data.FileName) + ".docx");
+                string tempPDFPath = Path.Combine(baseDir, "FileReportPlagiarism");
+                string templatePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "TemplateCheckPlagiarism.docx");
+                using (DocX document = DocX.Load(templatePath))
+                {
+                    // Thay thế các placeholder bằng dữ liệu thực tế
+                    document.ReplaceText("{TenTacGia}", data.Author);
+                    document.ReplaceText("{TenFile}", data.FileName);
+                    document.ReplaceText("{ThoiGianBatDau}", beginStart.ToString("dd/MM/yyyy HH:mm:ss"));
+                    document.ReplaceText("{ThoiGianKetThuc}", endStart.ToString("dd/MM/yyyy HH:mm:ss"));
+                    //document.ReplaceText("{SoTrang}", Plagiarism.GetPageCountAsync(data.PathPDF).ToString());
+                    document.ReplaceText("{FileTuongDong}", data.FileHighestRatio);
+                    document.ReplaceText("{TyLeTuongDong}", data.PlagiarismRate.ToString() + "%");
+                    document.ReplaceText("{DoanVanTrungLap}", data.ContentDuplicated);
+
+                    // Lưu ra file mới
+                    document.SaveAs(tempDocxPath);
+                }
+                var convertApi = new ConvertApi("secret_tZTEdbKGGYS9AFVK");
+                var conversionResult = await convertApi.ConvertAsync("docx", "pdf",
+                    new ConvertApiFileParam("File", tempDocxPath)
+                );
+
+                await conversionResult.SaveFilesAsync(tempPDFPath);
+
+                // Xóa file tạm
+                System.IO.File.Delete(tempDocxPath);
+                string fileUrl = Path.Combine(tempPDFPath, ExtensionFile.GetFileNameWithoutExtension(data.FileName) + ".pdf");
+                var memory = new MemoryStream();
+                await using (var stream = new FileStream(fileUrl, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+                return memory;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
     }
 }

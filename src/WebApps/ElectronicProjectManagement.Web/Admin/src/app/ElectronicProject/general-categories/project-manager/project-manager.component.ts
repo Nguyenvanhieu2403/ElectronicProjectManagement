@@ -11,6 +11,8 @@ import { ProjetcManagerService } from '../../service/projetc-manager.service';
 import { AddProjectManagerComponent } from './add-project-manager/add-project-manager.component';
 import { EditProjectManagerComponent } from './edit-project-manager/edit-project-manager.component';
 import { ImportProjectManagerComponent } from './import-project-manager/import-project-manager.component';
+import { saveAs } from 'file-saver';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-manager',
@@ -118,7 +120,31 @@ export class ProjectManagerComponent
       .finally(() => (this.isLoading = false));
   }
 
-  exportExcel() {}
+  exportExcel() {
+    const model = {
+      keyword: this.keyword,
+      status: 1,
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      orderCol: this.orderCol,
+      isDesc: this.isDesc,
+      totalRecord: 0,
+    };
+    this.isLoading = true;
+    const date = new Date();
+        const dateStr = `${date.getDate().toString().padStart(2, '0')}_${(
+          date.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, '0')}_${date.getFullYear()}`;
+        this.isLoading = true;
+        this._service
+          .exportExcel(model)
+          .pipe(finalize(() => (this.isLoading = false)))
+          .subscribe((blob) => {
+            saveAs(blob, `Detai_${dateStr}.xlsx`);
+          });
+  }
 
   downloadFile(item: any) {
     if (!item) return;

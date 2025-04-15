@@ -125,6 +125,9 @@
               </span>
               <span *ngSwitchCase="'plagiarismRate'">{{ rowData.plagiarismRate ?? 0  }} % </span>
               <span *ngSwitchCase="'timeCheck'">{{ rowData.timeCheck ?? 0  }} ms </span>
+              <span *ngSwitchCase="'fileHighestRatio'">
+                <u (click)="downloadFileHighestRatio(rowData)" style="cursor: pointer;color :deepskyblue"> {{rowData.fileHighestRatio}} </u>
+              </span>
               <span *ngSwitchCase="'contentDuplicated'">
                 <!-- {{ rowData.contentDuplicated?.split(' ').slice(0, 10).join(' ') + (rowData.contentDuplicated?.split(' ').length > 10 ? '...' : '') }} -->
                 <button pButton pRipple type="button" icon="pi pi-eye" class="p-button-rounded p-button-text"
@@ -138,9 +141,11 @@
                 <span *ngIf="rowData.status === null || rowData.status === undefine" class="status-danger">Chưa nộp</span>
               </span>
               <span *ngSwitchCase="'action'">
-                <button pButton pRipple type="button" icon="pi pi-check-circle" class="p-button-rounded p-button-text"
+                <button *ngIf="rowData.status != null" pButton pRipple type="button" icon="pi pi-file-pdf" class="p-button-rounded p-button-text"
+                  (click)="downloadReportCheckPlagiarism(rowData)" pTooltip="Download file báo cáo"></button>
+                <button *ngIf="rowData.status != null" pButton pRipple type="button" icon="pi pi-check-circle" class="p-button-rounded p-button-text"
                   (click)="projectApproval(rowData, 1)" pTooltip="Phê duyệt"></button>
-                <button pButton pRipple type="button" icon="pi pi-ban" style="color: red"
+                <button *ngIf="rowData.status != null" pButton pRipple type="button" icon="pi pi-ban" style="color: red"
                   class="p-button-rounded p-button-text" (click)="rejectProjectDialog(rowData)"
                   pTooltip="Từ chối"></button>
               </span>

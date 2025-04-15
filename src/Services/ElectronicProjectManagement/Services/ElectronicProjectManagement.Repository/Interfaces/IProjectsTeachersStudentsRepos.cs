@@ -13,6 +13,7 @@ namespace ElectronicProjectManagement.Repository.Interfaces
     public interface IProjectsTeachersStudentsRepos : IBaseRepos<ProjectsTeachersStudents>
     {
         Task<MethodResult<List<ProjectsTeachersStudents>>> GetsProjectsTeachersStudentsBySearch(SearchModel model);
+        Task<MemoryStream> ProjectsTeachersStudentsExportExcel(SearchModel model);
         Task<MethodResult> RegisterTeachers(ProjectsTeachersStudents model);
         Task<MethodResult<List<ProjectBatchUserModel>>> GetStudentRegister(ProjectsTeachersStudentsRegisterModel model);
         Task<MethodResult> RegisterProjects(ProjectsTeachersStudents model);

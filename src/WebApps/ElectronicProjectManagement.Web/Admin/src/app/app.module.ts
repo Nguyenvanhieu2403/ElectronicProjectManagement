@@ -71,6 +71,12 @@ import { PersonalProjectManagementComponent } from './ElectronicProject/personal
 import { AddPersonalProjectManagementComponent } from './ElectronicProject/personal-project-management/add-personal-project-management/add-personal-project-management.component';
 import { ViewPersonalProjectManagementComponent } from './ElectronicProject/personal-project-management/view-personal-project-management/view-personal-project-management.component';
 import { ProjectApprovalComponent } from './ElectronicProject/project-approval/project-approval.component';
+import { ThesisDefenceComponent } from './ElectronicProject/thesis-defence/thesis-defence.component';
+import { AddThesisDefenceComponent } from './ElectronicProject/thesis-defence/add-thesis-defence/add-thesis-defence.component';
+import { CommentThesisDefenceComponent } from './ElectronicProject/thesis-defence/comment-thesis-defence/comment-thesis-defence.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ChatBoxComponent } from './chat-box/chat-box.component';
+
 export function createTranslateLoader(http: HttpClient) {
   return new MultiTranslateHttpLoader(http);
 }
@@ -114,7 +120,7 @@ export function createTranslateLoader(http: HttpClient) {
     ChartModule,
     PdfViewerModule,
   ],
-  declarations: [
+  declarations: [	
     AppComponent,
     AppMainComponent,
     AppConfigComponent,
@@ -128,6 +134,8 @@ export function createTranslateLoader(http: HttpClient) {
     AppErrorComponent,
     AppAccessdeniedComponent,
     LoginLayoutComponent,
+    DashboardComponent,
+    ChatBoxComponent,
     ReferencesFileManagerComponent,
     AddReferencesFileManagerComponent,
     EditReferencesFileManagerComponent,
@@ -151,7 +159,11 @@ export function createTranslateLoader(http: HttpClient) {
     AddPersonalProjectManagementComponent,
     ViewPersonalProjectManagementComponent,
     ProjectApprovalComponent,
-  ],
+    ThesisDefenceComponent,
+    AddThesisDefenceComponent,
+    CommentThesisDefenceComponent,
+      ChatBoxComponent
+   ],
   providers: [
     MenuService,
     {

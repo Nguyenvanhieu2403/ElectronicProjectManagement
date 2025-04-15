@@ -5,16 +5,19 @@ using ElectronicProjectManagement.DataContext.Model;
 using ElectronicProjectManagement.Repository.Interfaces;
 using FastMember;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VnPostLib.Common.Api.Models;
 using VnPostLib.Common.Base;
+using VnPostLib.Common.Helpers;
 using VnPostLib.Common.Utils;
 using Z.Dapper.Plus;
 
@@ -119,6 +122,72 @@ namespace ElectronicProjectManagement.Repository
             {
                 return MethodResult.ResultWithError("error", ex.Message, 400);
             }
+        }
+
+        private async Task<DataTable> ExportExcelToDataTable(ReferencesFileSearchModel model)
+        {
+            DataTable dataTable = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(NamingConventionHelpers.GetSqlConnectionString(_configuration)))
+            {
+                conn.Open();
+                using (SqlCommand command = new SqlCommand("EPM.GetReferencesFileExcel", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Keyword", (model.Keyword ?? ""));
+                    command.Parameters.AddWithValue("@isDesc", model.IsDesc);
+                    command.Parameters.AddWithValue("@orderCol", model.OrderCol);
+                    command.Parameters.AddWithValue("@status", model.Status);
+                    command.CommandTimeout = 420;
+                    using (SqlDataAdapter adapter1 = new SqlDataAdapter(command))
+                    {
+                        adapter1.Fill(dataTable);
+                    }
+                }
+                conn.Close();
+            }
+            return dataTable;
+        }
+
+        public async Task<MemoryStream> ExportExcel(ReferencesFileSearchModel model)
+        {
+            var exportFile = new MemoryStream();
+
+            #region call list api
+            var result = await ExportExcelToDataTable(model);
+            #endregion
+
+            #region xuất excel từ template
+            // Đường dẫn tới file template
+            string templatePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "EPM_ReferencesFileReport.xlsx"); ;
+
+            // Đọc file template
+            var fileInfo = new FileInfo(templatePath);
+            using (var package = new OfficeOpenXml.ExcelPackage(fileInfo))
+            {
+                // Lấy worksheet đầu tiên từ template
+                var worksheet = package.Workbook.Worksheets[0];
+                worksheet.Cells["A5"].LoadFromDataTable(result, false);
+
+                // Tự động điều chỉnh kích thước cột
+                //worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                var range = worksheet.Cells["A5:H" + (result.Rows.Count + 6).ToString()];
+                foreach (var cell in range)
+                {
+                    var border = cell.Style.Border;
+                    border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
+
+                package.SaveAs(exportFile);
+            }
+
+            exportFile.Position = 0;
+            return exportFile;
+            #endregion
         }
 
         public async Task<MethodResult<List<ReferencesFile>>> GetsAllReferencesFile()
