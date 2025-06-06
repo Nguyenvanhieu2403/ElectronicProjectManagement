@@ -3,8 +3,8 @@
     "gateway": "http://localhost/gwep",
     "coreEndpoint": "http://localhost/gwep/coreapi",
     "notificationHub": "http://localhost/gwep/notifi",
-    "dotnetEndpoint": "https://localhost:7155",
-    "fileEndpoint": "https://localhost:7155/File/download",
+    "dotnetEndpoint": "https://localhost:7155/api",
+    "fileEndpoint": "https://localhost:7155/api/File/download",
     "akeneoEndpoint": "https://akeneo.baprangbo.site/api/rest/v1"
   },
   "authenticationSettings": {

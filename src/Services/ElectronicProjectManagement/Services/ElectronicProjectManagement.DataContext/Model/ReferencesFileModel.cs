@@ -11,13 +11,13 @@ namespace ElectronicProjectManagement.DataContext.Model
     {
         public long Id { get; set; }
         public string Title { get; set; }
-        public string Author { get; set; }
-        public string DocumentType { get; set; }
-        public DateTime YearPublication { get; set; }
+        public string? Author { get; set; }
+        public string? DocumentType { get; set; }
+        public DateTime? YearPublication { get; set; }
         public string? FileName { get; set; }
         public string? Path { get; set; }
         public string? Description { get; set; }
-        public string Field { get; set; }
+        public string? Field { get; set; }
         public byte? Status { get; set; }
         public DateTime? CreateDate { get; set; }
         public long? CreateBy { get; set; }

@@ -117,7 +117,7 @@
                   class="p-button-rounded p-button-text" (click)="onDelete(rowData)"
                   pTooltip="Xoá"></button>
               </span>
-              <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
+              <span *ngSwitchDefault>{{ rowData[col.field] == 'null' ? '' : rowData[col.field] }}</span>
             </td>
           </tr>
         </ng-template>

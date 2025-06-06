@@ -15,31 +15,32 @@
             formControlName="title">
         </div>
         <div class="field col-12 md:col-6">
-          <label for="author">Tác giả<span style="color: red;">*</span></label>
+          <label for="author">Tác giả</label>
           <input type="text" pInputText [(ngModel)]="itemDetail.author" autocomplete="off"
             formControlName="author">
         </div>
         <div class="field col-12 md:col-6">
-          <label for="documentType">Loại tài liệu <span style="color: red;">*</span></label>
+          <label for="documentType">Loại tài liệu </label>
           <input type="text" pInputText [(ngModel)]="itemDetail.documentType" autocomplete="off"
             formControlName="documentType">
         </div>
         <div class="field col-12 md:col-6">
-          <label for="yearPublication">Năm xuất bản <span style="color: red;">*</span></label>
+          <label for="yearPublication">Năm xuất bản </label>
             <p-calendar 
             [(ngModel)]="itemDetail.yearPublication" 
             formControlName="yearPublication"
             [iconDisplay]="'input'" 
             [showIcon]="true" 
-            inputId="icondisplay" />
+            inputId="icondisplay"
+            appendTo="body"  />
         </div>
         <div class="field col-12 md:col-6">
-          <label for="field">Lĩnh vực <span style="color: red;">*</span></label>
+          <label for="field">Lĩnh vực </label>
           <input type="text" pInputText [(ngModel)]="itemDetail.field" autocomplete="off"
             formControlName="field">
         </div>
         <div class="field col-12 md:col-6">
-          <label for="description">Mô tả<span style="color: red;">*</span></label>
+          <label for="description">Mô tả</label>
           <textarea 
             rows="5" 
             cols="30" 

@@ -13,7 +13,7 @@ using VnPostLib.Common.Base;
 
 namespace ElectronicProjectManagement.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize]
     [ApiController]
     public class ThesisDefenceController : BaseController<IThesisDefenceRepos, ThesisDefence>

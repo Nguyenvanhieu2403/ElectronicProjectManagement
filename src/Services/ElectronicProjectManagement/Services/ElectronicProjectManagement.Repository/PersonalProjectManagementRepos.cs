@@ -74,8 +74,39 @@ namespace ElectronicProjectManagement.Repository
             {
                 foreach (var baseFilePath in filePathsFromBase)
                 {
-                    // So sánh từng cặp file và thêm vào danh sách Task
-                    comparisonTasks.Add(Plagiarism.CompareTwoFileAsync(baseFilePath, targetFilePath, SimilarSentences));
+                    string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(baseFilePath));
+
+                    try
+                    {
+                        // Copy file gốc sang file tạm
+                        File.Copy(baseFilePath, tempFilePath, true);
+
+                        // Thêm task xử lý so sánh và xóa file tạm sau khi xong
+                        comparisonTasks.Add(Task.Run(async () =>
+                        {
+                            try
+                            {
+                                await Plagiarism.CompareTwoFileAsync(tempFilePath, targetFilePath, SimilarSentences);
+                            }
+                            finally
+                            {
+                                // Dọn dẹp file tạm
+                                try
+                                {
+                                    if (File.Exists(tempFilePath))
+                                        File.Delete(tempFilePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"Lỗi khi xóa file tạm: {ex.Message}");
+                                }
+                            }
+                        }));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Lỗi khi tạo file tạm: {ex.Message}");
+                    }
                 }
             }
 
@@ -541,9 +572,47 @@ namespace ElectronicProjectManagement.Repository
                 List<(List<string>, double, string baseFilePath, string targetFilePath)> SimilarSentences = new List<(List<string>, double, string baseFilePath, string targetFilePath)>();
                 foreach (var targetFilePath in filePathsToCompares)
                 {
+                    string tempTargetFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(targetFilePath));
+                    File.Copy(targetFilePath, tempTargetFilePath, true);
                     foreach (var baseFilePath in filePathsFromBase)
                     {
-                        comparisonTasks.Add(Plagiarism.CompareTwoFileAsync(baseFilePath, targetFilePath, SimilarSentences));
+                        //comparisonTasks.Add(Plagiarism.CompareTwoFileAsync(baseFilePath, targetFilePath, SimilarSentences));
+                        string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(baseFilePath));
+
+                        try
+                        {
+                            // Copy file gốc sang file tạm
+                             File.Copy(baseFilePath, tempFilePath, true);
+
+                            // Thêm task xử lý so sánh và xóa file tạm sau khi xong
+                            comparisonTasks.Add(Task.Run(async () =>
+                            {
+                                try
+                                {
+                                    await Plagiarism.CompareTwoFileAsync(tempFilePath, tempTargetFilePath, SimilarSentences);
+                                }
+                                finally
+                                {
+                                    // Dọn dẹp file tạm
+                                    try
+                                    {
+                                        //if (File.Exists(tempTargetFilePath))
+                                        //    File.Delete(tempTargetFilePath);
+
+                                        //if (File.Exists(tempFilePath))
+                                        //    File.Delete(tempFilePath);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine($"Lỗi khi xóa file tạm: {ex.Message}");
+                                    }
+                                }
+                            }));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Lỗi khi tạo file tạm: {ex.Message}");
+                        }
                     }
                 }
 
@@ -552,25 +621,29 @@ namespace ElectronicProjectManagement.Repository
                 var endStart = DateTime.Now;
 
                 SimilarSentences = SimilarSentences.OrderByDescending(x => x.Item2).ToList();
-                string tempDocxPath = Path.Combine(Path.GetTempPath(), ExtensionFile.GetFileNameWithoutExtension(data.FileName) + ".docx");
+                string tempDocxPath = Path.Combine(Path.GetTempPath(), ExtensionFile.GetFileNameWithoutExtension(Path.GetFileName(SimilarSentences[1].targetFilePath)) + ".docx");
                 string tempPDFPath = Path.Combine(baseDir, "FileReportPlagiarism");
                 string templatePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "template", "TemplateCheckPlagiarism.docx");
                 using (DocX document = DocX.Load(templatePath))
                 {
                     // Thay thế các placeholder bằng dữ liệu thực tế
                     document.ReplaceText("{TenTacGia}", data.Author);
-                    document.ReplaceText("{TenFile}", data.FileName);
+                    document.ReplaceText("{TenFile}", Path.GetFileName(SimilarSentences[1].targetFilePath));
                     document.ReplaceText("{ThoiGianBatDau}", beginStart.ToString("dd/MM/yyyy HH:mm:ss"));
                     document.ReplaceText("{ThoiGianKetThuc}", endStart.ToString("dd/MM/yyyy HH:mm:ss"));
-                    //document.ReplaceText("{SoTrang}", Plagiarism.GetPageCountAsync(data.PathPDF).ToString());
-                    document.ReplaceText("{FileTuongDong}", data.FileHighestRatio);
-                    document.ReplaceText("{TyLeTuongDong}", data.PlagiarismRate.ToString() + "%");
-                    document.ReplaceText("{DoanVanTrungLap}", data.ContentDuplicated);
+                    document.ReplaceText("{FileTuongDong}", Path.GetFileName(SimilarSentences[1].baseFilePath));
+                    document.ReplaceText("{TyLeTuongDong}", ((float)(SimilarSentences[1].Item2 * 100)).ToString("0.00") + "%");
+                    var duplicate = "";
+                    foreach (var item in SimilarSentences[1].Item1)
+                    {
+                        duplicate += $"{item}\n";
+                    }
+                    document.ReplaceText("{DoanVanTrungLap}", duplicate);
 
                     // Lưu ra file mới
                     document.SaveAs(tempDocxPath);
                 }
-                var convertApi = new ConvertApi("secret_tZTEdbKGGYS9AFVK");
+                var convertApi = new ConvertApi(_configuration.GetSection("File").GetValue<string>("secretConvertApi"));
                 var conversionResult = await convertApi.ConvertAsync("docx", "pdf",
                     new ConvertApiFileParam("File", tempDocxPath)
                 );
@@ -579,7 +652,7 @@ namespace ElectronicProjectManagement.Repository
 
                 // Xóa file tạm
                 System.IO.File.Delete(tempDocxPath);
-                string fileUrl = Path.Combine(tempPDFPath, ExtensionFile.GetFileNameWithoutExtension(data.FileName) + ".pdf");
+                string fileUrl = Path.Combine(tempPDFPath, ExtensionFile.GetFileNameWithoutExtension(Path.GetFileName(SimilarSentences[1].targetFilePath)) + ".pdf");
                 var memory = new MemoryStream();
                 await using (var stream = new FileStream(fileUrl, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {

@@ -5,7 +5,7 @@ using VnPostLib.Common.Api.Attributes;
 
 namespace ElectronicProjectManagement.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize]
     [ApiController]
     public class FileController : ControllerBase

@@ -69,10 +69,10 @@ export class AzPermissionsFormComponent extends SecondPageEditBase implements On
 
   async onShowPopup(id) {
     // this.resetForm();
+    await this.loadControllersByService(0);
     if (this.dsServices.length === 0) {
       this.loadServices();
     }
-    await this.loadControllersByService(0);
     this.submitting = true;
     this.validationSummary.resetErrorMessages();
     if (id > 0) {

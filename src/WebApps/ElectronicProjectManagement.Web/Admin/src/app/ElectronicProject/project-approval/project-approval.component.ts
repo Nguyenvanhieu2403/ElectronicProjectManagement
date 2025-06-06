@@ -459,7 +459,7 @@ export class ProjectApprovalComponent
     this._service
       .downloadReportCheckPlagiarism(item.idProjectsTeachersStudents)
       .subscribe((blob) => {
-        const fileName = `ReportCheckPlagiarism_${item.projectName}.pdf`;
+        const fileName = `ReportCheckPlagiarism_${item.nameStudent}_${item.projectName}.pdf`;
         saveAs(blob, fileName);
         this._notifierService.showSuccess(`Tải xuống thành công ${fileName}`);
       }, (error) => {

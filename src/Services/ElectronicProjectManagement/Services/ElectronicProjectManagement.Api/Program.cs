@@ -23,6 +23,12 @@ var config = new MapperConfiguration(cfg =>
 var mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestBodySize = 1024 * 1024 * 1024; // 1GB
+});
+
+
 //builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(8002));
 
 var app = builder.Build();

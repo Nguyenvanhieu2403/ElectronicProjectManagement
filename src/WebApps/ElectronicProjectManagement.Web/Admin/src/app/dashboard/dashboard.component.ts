@@ -106,7 +106,7 @@ export class DashboardComponent implements OnInit {
         },
       },
     };
-}
+  }
 
   loadChartProjectScoreStatisticsForYear(data) {
     const documentStyle1 = getComputedStyle(document.documentElement);

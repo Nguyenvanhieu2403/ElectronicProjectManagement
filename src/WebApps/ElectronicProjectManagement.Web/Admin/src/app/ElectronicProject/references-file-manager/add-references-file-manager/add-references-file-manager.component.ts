@@ -24,11 +24,11 @@ export class AddReferencesFileManagerComponent extends SecondPageEditBase implem
     super(_service, _injector);
     this.formGroup = new UntypedFormGroup({
       title: new UntypedFormControl('', [Validators.required]),
-      author: new UntypedFormControl('', [Validators.required]),
-      documentType: new UntypedFormControl('', [Validators.required]),
-      yearPublication: new UntypedFormControl('', [Validators.required]),
-      description: new UntypedFormControl('', [Validators.required]),
-      field: new UntypedFormControl('', [Validators.required]),
+      // author: new UntypedFormControl('', [Validators.required]),
+      // documentType: new UntypedFormControl('', [Validators.required]),
+      // yearPublication: new UntypedFormControl('', [Validators.required]),
+      // description: new UntypedFormControl('', [Validators.required]),
+      // field: new UntypedFormControl('', [Validators.required]),
     });
   }
 

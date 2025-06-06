@@ -218,14 +218,14 @@ export class PersonalProjectManagementComponent
     let fileName = '';
 
     if (type == 'pdf') {
-      filePath = this.itemDetail.pathPDF;
-      fileName = this.itemDetail.namePDF;
+      filePath = item.pathPDF;
+      fileName = item.namePDF;
     } else if (type == 'ppt') {
-      filePath = this.itemDetail.pathPPT;
-      fileName = this.itemDetail.namePPT;
+      filePath = item.pathPPT;
+      fileName = item.namePPT;
     } else {
-      filePath = this.itemDetail.pathSource;
-      fileName = this.itemDetail.nameSource;
+      filePath = item.pathSource;
+      fileName = item.nameSource;
     }
 
     this._fileService.getFiles(filePath).subscribe({
